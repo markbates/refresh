@@ -26,7 +26,6 @@ func NewWatcher(r *Manager) *Watcher {
 func (w *Watcher) Start() {
 	go func() {
 		for {
-			// w.Logger.Println("Sweeping for new/removed files")
 			filepath.Walk(w.AppRoot, func(path string, info os.FileInfo, err error) error {
 				if info.IsDir() {
 					if len(path) > 1 && strings.HasPrefix(filepath.Base(path), ".") || w.isIgnoredFolder(path) {

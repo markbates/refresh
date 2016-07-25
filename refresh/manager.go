@@ -2,7 +2,6 @@ package refresh
 
 import (
 	"log"
-	"os"
 	"sync"
 	"time"
 
@@ -11,23 +10,20 @@ import (
 
 type Manager struct {
 	*Configuration
-	Logger  *log.Logger
+	Logger  *Logger
 	Restart chan bool
 	gil     *sync.Once
 }
 
 func (r *Manager) build() {
 	r.gil.Do(func() {
-		sl := time.Duration(r.BuildDelay) * time.Millisecond
-		time.Sleep(sl)
+		time.Sleep(r.BuildDelay * time.Millisecond)
 
 		b := NewBuilder(*r)
 		err := b.Build()
-		if err != nil {
-			r.Logger.Printf("Error building: %s, %s", b.ID, err)
+		if err == nil {
+			r.Restart <- true
 		}
-
-		r.Restart <- true
 		r.gil = &sync.Once{}
 	})
 }
@@ -40,8 +36,6 @@ func (r *Manager) Start() error {
 		for {
 
 			event := <-w.Events
-			// fmt.Printf("### event -> %s\n", event)
-			// log.Println("modified file:", event.Name)
 			if event.Op != fsnotify.Chmod {
 				go r.build()
 			}
@@ -62,7 +56,7 @@ func (r *Manager) Start() error {
 func New(c *Configuration) *Manager {
 	return &Manager{
 		Configuration: c,
-		Logger:        log.New(os.Stdout, "refresh: ", log.LstdFlags),
+		Logger:        NewLogger(c),
 		Restart:       make(chan bool),
 		gil:           &sync.Once{},
 	}

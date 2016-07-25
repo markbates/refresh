@@ -3,18 +3,20 @@ package refresh
 import (
 	"io/ioutil"
 	"path"
+	"time"
 
 	yaml "gopkg.in/yaml.v2"
 )
 
 type Configuration struct {
-	AppRoot            string   `yaml:"app_root"`
-	IgnoredFolders     []string `yaml:"ignored_folders"`
-	IncludedExtensions []string `yaml:"included_extensions"`
-	BuildPath          string   `yaml:"build_path"`
-	BuildDelay         int64    `yaml:"build_delay"`
-	BinaryName         string   `yaml:"binary_name"`
-	CommandFlags       []string `yaml:"command_flags"`
+	AppRoot            string        `yaml:"app_root"`
+	IgnoredFolders     []string      `yaml:"ignored_folders"`
+	IncludedExtensions []string      `yaml:"included_extensions"`
+	BuildPath          string        `yaml:"build_path"`
+	BuildDelay         time.Duration `yaml:"build_delay"`
+	BinaryName         string        `yaml:"binary_name"`
+	CommandFlags       []string      `yaml:"command_flags"`
+	EnableColors       bool          `yaml:"enable_colors"`
 }
 
 func (c *Configuration) FullBuildPath() string {

@@ -1,62 +1,58 @@
 package refresh
 
 import (
+	"bufio"
+	"bytes"
 	"fmt"
 	"os/exec"
-
-	"github.com/markbates/going/clam"
+	"strings"
 )
 
 func (m *Manager) runner() {
 	var cmd *exec.Cmd
 	for {
 		<-m.Restart
-		fmt.Println("restart!!!")
 		if cmd != nil {
 			// kill the preview command
 			pid := cmd.Process.Pid
-			m.Logger.Printf("=== Killing PID %d ===\n", pid)
+			m.Logger.Success("Stopping: PID %d", pid)
 			cmd.Process.Kill()
 		}
 		cmd = exec.Command(m.FullBuildPath(), m.CommandFlags...)
 		go func() {
-			err := clam.RunAndListen(cmd, func(s string) {
-				m.Logger.Println(s)
+			err := m.runAndListen(cmd, func(s string) {
+				fmt.Println(s)
 			})
-			m.Logger.Println(err)
+			m.Logger.Error(err)
 		}()
 	}
 }
 
-// func run(id string) bool {
-// 	runnerLog("=== Running (%s) ===", id)
-//
-// 	cmd := exec.Command(buildPath(), cmdFlags())
-//
-// 	stderr, err := cmd.StderrPipe()
-// 	if err != nil {
-// 		fatal(err)
-// 	}
-//
-// 	stdout, err := cmd.StdoutPipe()
-// 	if err != nil {
-// 		fatal(err)
-// 	}
-//
-// 	err = cmd.Start()
-// 	if err != nil {
-// 		fatal(err)
-// 	}
-//
-// 	go io.Copy(appLogWriter{}, stderr)
-// 	go io.Copy(appLogWriter{}, stdout)
-//
-// 	go func() {
-// 		<-stopChannel
-// 		pid := cmd.Process.Pid
-// 		runnerLog("=== Killing PID %d ===", pid)
-// 		cmd.Process.Kill()
-// 	}()
-//
-// 	return true
-// }
+func (m *Manager) runAndListen(cmd *exec.Cmd, fn func(s string)) error {
+	var stderr bytes.Buffer
+	cmd.Stderr = &stderr
+
+	r, err := cmd.StdoutPipe()
+	if err != nil {
+		return fmt.Errorf("%s: %s", err, stderr.String())
+	}
+
+	scanner := bufio.NewScanner(r)
+	go func() {
+		for scanner.Scan() {
+			fn(scanner.Text())
+		}
+	}()
+
+	err = cmd.Start()
+	if err != nil {
+		return fmt.Errorf("%s: %s", err, stderr.String())
+	}
+
+	m.Logger.Success("Running: %s (PID: %d)", strings.Join(cmd.Args, " "), cmd.Process.Pid)
+	err = cmd.Wait()
+	if err != nil {
+		return fmt.Errorf("%s: %s", err, stderr.String())
+	}
+	return nil
+}

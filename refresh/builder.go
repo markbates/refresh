@@ -3,7 +3,6 @@ package refresh
 import (
 	"os/exec"
 
-	"github.com/markbates/going/clam"
 	"github.com/markbates/going/randx"
 )
 
@@ -20,16 +19,16 @@ func NewBuilder(r Manager) Builder {
 }
 
 func (b Builder) Build() error {
-	b.Logger.Printf("=== Building (ID: %s) ===", b.ID)
-
 	cmd := exec.Command("go", "build", "-v", "-i", "-o", b.FullBuildPath())
-	err := clam.RunAndListen(cmd, func(s string) {
-		b.Logger.Printf("\t[%s] %s\n", b.ID, s)
+	err := b.runAndListen(cmd, func(s string) {
+		b.Logger.Print(s)
 	})
 
 	if err != nil {
+		b.Logger.Error("Building Error!")
+		b.Logger.Error(err)
 		return err
 	}
-	b.Logger.Printf("=== Completed (ID: %s) (PATH: %s) ===\n", b.ID, b.FullBuildPath())
+	b.Logger.Success("Building Completed (PID: %d)", cmd.Process.Pid)
 	return nil
 }
