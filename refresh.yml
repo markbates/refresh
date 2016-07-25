@@ -1,0 +1,13 @@
+app_root: .
+ignored_folders:
+- vendor
+- log
+- tmp
+included_extensions:
+- .go
+build_path: /tmp
+build_delay: 200
+binary_name: refresh-build
+log_path: refresh.log
+enable_colors: true
+command_flags: []
