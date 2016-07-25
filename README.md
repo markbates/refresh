@@ -38,6 +38,19 @@ $ refresh run
 
 That's it! Now, as you change your code the binary will be re-built and re-started for you.
 
+## HTTP Handler
+
+Refresh is nice enough to ship with an `http.Handler` that you can wrap around your requests. Why would you want to do that?
+Well, if there is an error doing a build, the built in `http.Handler` will print the error in your browser in giant text so you'll know that
+there was a problem, and where to fix it (hopefully).
+
+```go
+...
+m := http.NewServeMux()
+err = http.ListenAndServe(":3000", web.ErrorChecker(m))
+...
+```
+
 ## Configuration Settings
 
 ```yml
