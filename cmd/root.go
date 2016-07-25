@@ -8,11 +8,14 @@ import (
 )
 
 var cfgFile string
+var Version = "1.0.0"
 
 var RootCmd = &cobra.Command{
 	Use:   "refresh",
 	Short: "Refresh is a command line tool that builds and (re)starts your Go application everytime you save a Go or template file.",
-	Run:   func(cmd *cobra.Command, args []string) {},
+	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		fmt.Printf("Refresh (%s)\n\n", Version)
+	},
 }
 
 func Execute() {
