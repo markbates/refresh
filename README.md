@@ -2,7 +2,7 @@
 
 ## Rebuild and re-run your Go applications when files change.
 
-This project was inspired by [https://github.com/pilu/fresh](https://github.com/pilu/fresh). Lack of updates and response from the maintainer, but a non-idiomatic codebase, numerous bugs, and lack of detailed reporting made the project a dead end for me to use. Enter `refresh`.
+This project was inspired by [https:#github.com/pilu/fresh](https:#github.com/pilu/fresh). Lack of updates and response from the maintainer, but a non-idiomatic codebase, numerous bugs, and lack of detailed reporting made the project a dead end for me to use. Enter `refresh`.
 
 This simple command line application will watch your files, trigger a build of your Go binary and restart the application for you.
 
@@ -41,26 +41,26 @@ That's it! Now, as you change your code the binary will be re-built and re-start
 ## Configuration Settings
 
 ```yml
-// this is the root of your application relavite to your configuration file:
+# this is the root of your application relavite to your configuration file:
 app_root: .
-// a list of folders you don't want to watch. the folders you ignore, the faster things will be:
+# a list of folders you don't want to watch. the folders you ignore, the faster things will be:
 ignored_folders:
   - vendor
   - log
   - tmp
-// a list of file extensions you want to watch for changes:
+# a list of file extensions you want to watch for changes:
 included_extensions:
   - .go
-// the directory you want to build your binary in:
+# the directory you want to build your binary in:
 build_path: /tmp
-// `fsnotify` can trigger many events at once when you change a file.
-// in order to help cut down on the amount of builds that occur, a delay
-// is used to let the extra events fly away.
+# `fsnotify` can trigger many events at once when you change a file.
+# in order to help cut down on the amount of builds that occur, a delay
+# is used to let the extra events fly away.
 build_delay: 200ms
-// what would you like to call the built binary:
+# what would you like to call the built binary:
 binary_name: refresh-build
-// any extra commands you want to send to the built binary when it is run:
+# any extra commands you want to send to the built binary when it is run:
 command_flags: []
-// do you want to use colors when printing out log messages:
+# do you want to use colors when printing out log messages:
 enable_colors: true
 ```
