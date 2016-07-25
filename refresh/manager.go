@@ -15,27 +15,13 @@ type Manager struct {
 	gil     *sync.Once
 }
 
-func (r *Manager) build(event fsnotify.Event) {
-	r.gil.Do(func() {
-		time.Sleep(r.BuildDelay * time.Millisecond)
-
-		now := time.Now()
-		r.Logger.Print("Rebuild on: %s", event.Name)
-		cmd := exec.Command("go", "build", "-v", "-i", "-o", r.FullBuildPath())
-		err := r.runAndListen(cmd, func(s string) {
-			r.Logger.Print(s)
-		})
-
-		if err != nil {
-			r.Logger.Error("Building Error!")
-			r.Logger.Error(err)
-		} else {
-			tt := time.Since(now)
-			r.Logger.Success("Building Completed (PID: %d) (Time: %s)", cmd.Process.Pid, tt)
-			r.Restart <- true
-		}
-		r.gil = &sync.Once{}
-	})
+func New(c *Configuration) *Manager {
+	return &Manager{
+		Configuration: c,
+		Logger:        NewLogger(c),
+		Restart:       make(chan bool),
+		gil:           &sync.Once{},
+	}
 }
 
 func (r *Manager) Start() error {
@@ -63,11 +49,25 @@ func (r *Manager) Start() error {
 	return nil
 }
 
-func New(c *Configuration) *Manager {
-	return &Manager{
-		Configuration: c,
-		Logger:        NewLogger(c),
-		Restart:       make(chan bool),
-		gil:           &sync.Once{},
-	}
+func (r *Manager) build(event fsnotify.Event) {
+	r.gil.Do(func() {
+		time.Sleep(r.BuildDelay * time.Millisecond)
+
+		now := time.Now()
+		r.Logger.Print("Rebuild on: %s", event.Name)
+		cmd := exec.Command("go", "build", "-v", "-i", "-o", r.FullBuildPath())
+		err := r.runAndListen(cmd, func(s string) {
+			r.Logger.Print(s)
+		})
+
+		if err != nil {
+			r.Logger.Error("Building Error!")
+			r.Logger.Error(err)
+		} else {
+			tt := time.Since(now)
+			r.Logger.Success("Building Completed (PID: %d) (Time: %s)", cmd.Process.Pid, tt)
+			r.Restart <- true
+		}
+		r.gil = &sync.Once{}
+	})
 }
