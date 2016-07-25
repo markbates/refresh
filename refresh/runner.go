@@ -13,7 +13,7 @@ func (m *Manager) runner() {
 	for {
 		<-m.Restart
 		if cmd != nil {
-			// kill the preview command
+			// kill the previous command
 			pid := cmd.Process.Pid
 			m.Logger.Success("Stopping: PID %d", pid)
 			cmd.Process.Kill()
@@ -34,7 +34,7 @@ func (m *Manager) runAndListen(cmd *exec.Cmd, fn func(s string)) error {
 
 	r, err := cmd.StdoutPipe()
 	if err != nil {
-		return fmt.Errorf("%s: %s", err, stderr.String())
+		m.Logger.Error("%s: %s", err, stderr.String())
 	}
 
 	scanner := bufio.NewScanner(r)
@@ -46,13 +46,15 @@ func (m *Manager) runAndListen(cmd *exec.Cmd, fn func(s string)) error {
 
 	err = cmd.Start()
 	if err != nil {
-		return fmt.Errorf("%s: %s", err, stderr.String())
+		m.Logger.Error("%s: %s", err, stderr.String())
+		return err
 	}
 
 	m.Logger.Success("Running: %s (PID: %d)", strings.Join(cmd.Args, " "), cmd.Process.Pid)
 	err = cmd.Wait()
 	if err != nil {
-		return fmt.Errorf("%s: %s", err, stderr.String())
+		m.Logger.Error("%s: %s", err, stderr.String())
+		return err
 	}
 	return nil
 }
