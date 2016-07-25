@@ -1,7 +1,10 @@
 package refresh
 
 import (
+	"crypto/md5"
+	"fmt"
 	"io/ioutil"
+	"os"
 	"path"
 	"time"
 
@@ -37,4 +40,9 @@ func (c *Configuration) Dump(path string) error {
 		return err
 	}
 	return ioutil.WriteFile(path, data, 0666)
+}
+
+func ID() string {
+	d, _ := os.Getwd()
+	return fmt.Sprintf("%x", md5.Sum([]byte(d)))
 }

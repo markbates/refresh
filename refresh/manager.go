@@ -1,6 +1,8 @@
 package refresh
 
 import (
+	"fmt"
+	"os"
 	"os/exec"
 	"sync"
 	"time"
@@ -13,6 +15,7 @@ type Manager struct {
 	Logger  *Logger
 	Restart chan bool
 	gil     *sync.Once
+	ID      string
 }
 
 func New(c *Configuration) *Manager {
@@ -21,6 +24,7 @@ func New(c *Configuration) *Manager {
 		Logger:        NewLogger(c),
 		Restart:       make(chan bool),
 		gil:           &sync.Once{},
+		ID:            ID(),
 	}
 }
 
@@ -51,23 +55,39 @@ func (r *Manager) Start() error {
 
 func (r *Manager) build(event fsnotify.Event) {
 	r.gil.Do(func() {
-		time.Sleep(r.BuildDelay * time.Millisecond)
+		defer func() {
+			r.gil = &sync.Once{}
+		}()
+		r.buildTransaction(func() error {
+			time.Sleep(r.BuildDelay * time.Millisecond)
 
-		now := time.Now()
-		r.Logger.Print("Rebuild on: %s", event.Name)
-		cmd := exec.Command("go", "build", "-v", "-i", "-o", r.FullBuildPath())
-		err := r.runAndListen(cmd, func(s string) {
-			r.Logger.Print(s)
-		})
+			now := time.Now()
+			r.Logger.Print("Rebuild on: %s", event.Name)
+			cmd := exec.Command("go", "build", "-v", "-i", "-o", r.FullBuildPath())
+			err := r.runAndListen(cmd, func(s string) {
+				r.Logger.Print(s)
+			})
+			if err != nil {
+				return err
+			}
 
-		if err != nil {
-			r.Logger.Error("Building Error!")
-			r.Logger.Error(err)
-		} else {
 			tt := time.Since(now)
 			r.Logger.Success("Building Completed (PID: %d) (Time: %s)", cmd.Process.Pid, tt)
 			r.Restart <- true
-		}
-		r.gil = &sync.Once{}
+			return nil
+		})
 	})
+}
+
+func (r *Manager) buildTransaction(fn func() error) {
+	lpath := ErrorLogPath()
+	err := fn()
+	if err != nil {
+		f, _ := os.Create(lpath)
+		fmt.Fprint(f, err)
+		r.Logger.Error("Building Error!")
+		r.Logger.Error(err)
+	} else {
+		os.Remove(lpath)
+	}
 }

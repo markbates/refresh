@@ -34,7 +34,7 @@ func (m *Manager) runAndListen(cmd *exec.Cmd, fn func(s string)) error {
 
 	r, err := cmd.StdoutPipe()
 	if err != nil {
-		m.Logger.Error("%s: %s", err, stderr.String())
+		return fmt.Errorf("%s\n%s", err, stderr.String())
 	}
 
 	scanner := bufio.NewScanner(r)
@@ -46,15 +46,13 @@ func (m *Manager) runAndListen(cmd *exec.Cmd, fn func(s string)) error {
 
 	err = cmd.Start()
 	if err != nil {
-		m.Logger.Error("%s: %s", err, stderr.String())
-		return err
+		return fmt.Errorf("%s\n%s", err, stderr.String())
 	}
 
 	m.Logger.Success("Running: %s (PID: %d)", strings.Join(cmd.Args, " "), cmd.Process.Pid)
 	err = cmd.Wait()
 	if err != nil {
-		m.Logger.Error("%s: %s", err, stderr.String())
-		return err
+		return fmt.Errorf("%s\n%s", err, stderr.String())
 	}
 	return nil
 }
