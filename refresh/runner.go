@@ -1,9 +1,10 @@
 package refresh
 
 import (
-	"bufio"
 	"bytes"
 	"fmt"
+	"io"
+	"os"
 	"os/exec"
 	"strings"
 )
@@ -30,21 +31,12 @@ func (m *Manager) runner() {
 
 func (m *Manager) runAndListen(cmd *exec.Cmd, fn func(s string)) error {
 	var stderr bytes.Buffer
-	cmd.Stderr = &stderr
+	mw := io.MultiWriter(&stderr, os.Stderr)
+	cmd.Stderr = mw
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
 
-	r, err := cmd.StdoutPipe()
-	if err != nil {
-		return fmt.Errorf("%s\n%s", err, stderr.String())
-	}
-
-	scanner := bufio.NewScanner(r)
-	go func() {
-		for scanner.Scan() {
-			fn(scanner.Text())
-		}
-	}()
-
-	err = cmd.Start()
+	err := cmd.Start()
 	if err != nil {
 		return fmt.Errorf("%s\n%s", err, stderr.String())
 	}
