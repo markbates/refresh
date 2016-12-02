@@ -21,7 +21,7 @@ func NewLogger(c *Configuration) *Logger {
 	color.NoColor = !c.EnableColors
 	lname := defaults.String(c.LogName, "refresh")
 	return &Logger{
-		log: log.New(os.Stdout, fmt.Sprintf("%s :", lname), log.LstdFlags),
+		log: log.New(os.Stdout, fmt.Sprintf("%s: ", lname), log.LstdFlags),
 	}
 }
 
