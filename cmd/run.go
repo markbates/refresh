@@ -17,17 +17,21 @@ var runCmd = &cobra.Command{
 	Aliases: []string{"r", "start", "build", "watch"},
 	Short:   "watches your files and rebuilds/restarts your app accordingly.",
 	Run: func(cmd *cobra.Command, args []string) {
-		c := &refresh.Configuration{}
-		err := c.Load(cfgFile)
-		if err != nil {
-			log.Fatalln(err)
-			os.Exit(-1)
-		}
-		r := refresh.New(c)
-		err = r.Start()
-		if err != nil {
-			log.Fatalln(err)
-			os.Exit(-1)
-		}
+		Run(cfgFile)
 	},
+}
+
+func Run(cfgFile string) {
+	c := &refresh.Configuration{}
+	err := c.Load(cfgFile)
+	if err != nil {
+		log.Fatalln(err)
+		os.Exit(-1)
+	}
+	r := refresh.New(c)
+	err = r.Start()
+	if err != nil {
+		log.Fatalln(err)
+		os.Exit(-1)
+	}
 }

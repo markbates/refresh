@@ -20,6 +20,7 @@ type Configuration struct {
 	BinaryName         string        `yaml:"binary_name"`
 	CommandFlags       []string      `yaml:"command_flags"`
 	EnableColors       bool          `yaml:"enable_colors"`
+	LogName            string        `yaml:"log_name"`
 }
 
 func (c *Configuration) FullBuildPath() string {

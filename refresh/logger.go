@@ -7,6 +7,7 @@ import (
 	"path"
 
 	"github.com/fatih/color"
+	"github.com/markbates/going/defaults"
 	homedir "github.com/mitchellh/go-homedir"
 )
 
@@ -18,8 +19,9 @@ type Logger struct {
 
 func NewLogger(c *Configuration) *Logger {
 	color.NoColor = !c.EnableColors
+	lname := defaults.String(c.LogName, "refresh")
 	return &Logger{
-		log: log.New(os.Stdout, "refresh: ", log.LstdFlags),
+		log: log.New(os.Stdout, fmt.Sprintf("%s :", lname), log.LstdFlags),
 	}
 }
 

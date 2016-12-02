@@ -8,7 +8,6 @@ import (
 )
 
 var cfgFile string
-var Version = "1.2.0"
 
 var RootCmd = &cobra.Command{
 	Use:   "refresh",
