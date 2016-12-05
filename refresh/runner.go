@@ -21,15 +21,15 @@ func (m *Manager) runner() {
 		}
 		cmd = exec.Command(m.FullBuildPath(), m.CommandFlags...)
 		go func() {
-			err := m.runAndListen(cmd, func(s string) {
-				fmt.Println(s)
-			})
-			m.Logger.Error(err)
+			err := m.runAndListen(cmd)
+			if err != nil {
+				m.Logger.Error(err)
+			}
 		}()
 	}
 }
 
-func (m *Manager) runAndListen(cmd *exec.Cmd, fn func(s string)) error {
+func (m *Manager) runAndListen(cmd *exec.Cmd) error {
 	var stderr bytes.Buffer
 	mw := io.MultiWriter(&stderr, os.Stderr)
 	cmd.Stderr = mw

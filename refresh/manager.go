@@ -64,9 +64,7 @@ func (r *Manager) build(event fsnotify.Event) {
 			now := time.Now()
 			r.Logger.Print("Rebuild on: %s", event.Name)
 			cmd := exec.Command("go", "build", "-v", "-i", "-o", r.FullBuildPath())
-			err := r.runAndListen(cmd, func(s string) {
-				r.Logger.Print(s)
-			})
+			err := r.runAndListen(cmd)
 			if err != nil {
 				return err
 			}
@@ -85,7 +83,7 @@ func (r *Manager) buildTransaction(fn func() error) {
 	if err != nil {
 		f, _ := os.Create(lpath)
 		fmt.Fprint(f, err)
-		r.Logger.Error("Building Error!")
+		r.Logger.Error("Error!")
 		r.Logger.Error(err)
 	} else {
 		os.Remove(lpath)
