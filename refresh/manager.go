@@ -1,9 +1,12 @@
 package refresh
 
 import (
+	"context"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
+	"strings"
 	"sync"
 	"time"
 
@@ -12,20 +15,30 @@ import (
 
 type Manager struct {
 	*Configuration
-	Logger  *Logger
-	Restart chan bool
-	gil     *sync.Once
-	ID      string
+	Logger     *Logger
+	Restart    chan bool
+	gil        *sync.Once
+	ID         string
+	context    context.Context
+	cancelFunc context.CancelFunc
 }
 
 func New(c *Configuration) *Manager {
-	return &Manager{
+	return NewWithContext(c, context.Background())
+}
+
+func NewWithContext(c *Configuration, ctx context.Context) *Manager {
+	ctx, cancelFunc := context.WithCancel(ctx)
+	m := &Manager{
 		Configuration: c,
 		Logger:        NewLogger(c),
 		Restart:       make(chan bool),
 		gil:           &sync.Once{},
 		ID:            ID(),
+		context:       ctx,
+		cancelFunc:    cancelFunc,
 	}
+	return m
 }
 
 func (r *Manager) Start() error {
@@ -34,19 +47,26 @@ func (r *Manager) Start() error {
 	go r.build(fsnotify.Event{Name: ":start:"})
 	go func() {
 		for {
-
-			event := <-w.Events
-			if event.Op != fsnotify.Chmod {
-				go r.build(event)
+			select {
+			case event := <-w.Events:
+				if event.Op != fsnotify.Chmod {
+					go r.build(event)
+				}
+				w.Remove(event.Name)
+				w.Add(event.Name)
+			case <-r.context.Done():
+				break
 			}
-			w.Remove(event.Name)
-			w.Add(event.Name)
 		}
 	}()
 	go func() {
 		for {
-			err := <-w.Errors
-			r.Logger.Error(err)
+			select {
+			case err := <-w.Errors:
+				r.Logger.Error(err)
+			case <-r.context.Done():
+				break
+			}
 		}
 	}()
 	r.runner()
@@ -66,6 +86,10 @@ func (r *Manager) build(event fsnotify.Event) {
 			cmd := exec.Command("go", "build", "-v", "-i", "-o", r.FullBuildPath())
 			err := r.runAndListen(cmd)
 			if err != nil {
+				if strings.Contains(err.Error(), "no buildable Go source files") {
+					r.cancelFunc()
+					log.Fatal(err)
+				}
 				return err
 			}
 

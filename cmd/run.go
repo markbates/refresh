@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"log"
 	"os"
 
@@ -22,13 +23,18 @@ var runCmd = &cobra.Command{
 }
 
 func Run(cfgFile string) {
+	ctx := context.Background()
+	RunWithContext(cfgFile, ctx)
+}
+
+func RunWithContext(cfgFile string, ctx context.Context) {
 	c := &refresh.Configuration{}
 	err := c.Load(cfgFile)
 	if err != nil {
 		log.Fatalln(err)
 		os.Exit(-1)
 	}
-	r := refresh.New(c)
+	r := refresh.NewWithContext(c, ctx)
 	err = r.Start()
 	if err != nil {
 		log.Fatalln(err)
