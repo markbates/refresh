@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"os"
+
 	"github.com/markbates/refresh/refresh"
 	"github.com/spf13/cobra"
 )
@@ -15,9 +17,9 @@ var initCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		c := refresh.Configuration{
 			AppRoot:            ".",
-			IgnoredFolders:     []string{"vendor", "log", "tmp"},
+			IgnoredFolders:     []string{"vendor", "log", "logs", "tmp", "node_modules", "bin", "templates"},
 			IncludedExtensions: []string{".go"},
-			BuildPath:          "/tmp",
+			BuildPath:          os.TempDir(),
 			BuildDelay:         200,
 			BinaryName:         "refresh-build",
 			CommandFlags:       []string{},
