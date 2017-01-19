@@ -9,7 +9,7 @@ This simple command line application will watch your files, trigger a build of y
 ## Installation
 
 ```
-$ go get github.com/markbates/fresh
+$ go get github.com/markbates/refresh
 ```
 
 ## Getting Started
