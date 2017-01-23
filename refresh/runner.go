@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"syscall"
 )
 
 func (m *Manager) runner() {
@@ -17,7 +18,10 @@ func (m *Manager) runner() {
 			// kill the previous command
 			pid := cmd.Process.Pid
 			m.Logger.Success("Stopping: PID %d", pid)
-			cmd.Process.Kill()
+			if err := cmd.Process.Signal(syscall.SIGINT); err != nil {
+				// If SIGINT fails, default to force Kill
+				cmd.Process.Kill()
+			}
 		}
 		cmd = exec.Command(m.FullBuildPath(), m.CommandFlags...)
 		go func() {
