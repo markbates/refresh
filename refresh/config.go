@@ -26,13 +26,13 @@ type Configuration struct {
 }
 
 func (c *Configuration) FullBuildPath() string {
-	path := path.Join(c.BuildPath, c.BinaryName)
+	buildPath := path.Join(c.BuildPath, c.BinaryName)
 	if runtime.GOOS == "windows" {
-		if !strings.HasSuffix(path, ".exe") {
-			path += ".exe"
+		if !strings.HasSuffix(strings.ToLower(buildPath), ".exe") {
+			buildPath += ".exe"
 		}
 	}
-	return path
+	return buildPath
 }
 
 func (c *Configuration) Load(path string) error {
