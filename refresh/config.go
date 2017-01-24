@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"runtime"
+	"strings"
 	"time"
 
 	yaml "gopkg.in/yaml.v2"
@@ -24,7 +26,13 @@ type Configuration struct {
 }
 
 func (c *Configuration) FullBuildPath() string {
-	return path.Join(c.BuildPath, c.BinaryName)
+	path := path.Join(c.BuildPath, c.BinaryName)
+	if runtime.GOOS == "windows" {
+		if !strings.HasSuffix(path, ".exe") {
+			path += ".exe"
+		}
+	}
+	return path
 }
 
 func (c *Configuration) Load(path string) error {
