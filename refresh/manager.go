@@ -79,7 +79,7 @@ func (r *Manager) build(event fsnotify.Event) {
 			r.gil = &sync.Once{}
 		}()
 		r.buildTransaction(func() error {
-			time.Sleep(r.BuildDelay * time.Millisecond)
+			// time.Sleep(r.BuildDelay * time.Millisecond)
 
 			now := time.Now()
 			r.Logger.Print("Rebuild on: %s", event.Name)
