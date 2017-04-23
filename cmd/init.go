@@ -24,6 +24,7 @@ var initCmd = &cobra.Command{
 			BuildDelay:         200,
 			BinaryName:         "refresh-build",
 			CommandFlags:       []string{},
+			CommandEnv:         []string{},
 			EnableColors:       true,
 		}
 		c.Dump(cfgFile)

@@ -76,6 +76,8 @@ build_target_path : ""
 binary_name: refresh-build
 # any extra commands you want to send to the built binary when it is run:
 command_flags: []
+# any extra environment variables you want to send to the built binary when it is run:
+command_env: []
 # do you want to use colors when printing out log messages:
 enable_colors: true
 ```
