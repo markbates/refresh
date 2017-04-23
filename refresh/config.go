@@ -21,6 +21,7 @@ type Configuration struct {
 	BuildDelay         time.Duration `yaml:"build_delay"`
 	BinaryName         string        `yaml:"binary_name"`
 	CommandFlags       []string      `yaml:"command_flags"`
+	CommandEnv         []string      `yaml:"command_env"`
 	EnableColors       bool          `yaml:"enable_colors"`
 	LogName            string        `yaml:"log_name"`
 }
