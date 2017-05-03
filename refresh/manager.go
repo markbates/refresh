@@ -44,16 +44,24 @@ func NewWithContext(c *Configuration, ctx context.Context) *Manager {
 func (r *Manager) Start() error {
 	w := NewWatcher(r)
 	w.Start()
-	go r.build(fsnotify.Event{Name: ":start:"})
+	go r.build([]fsnotify.Event{fsnotify.Event{Name: ":start:"}})
+	tick := time.Tick(r.BuildDelay)
+	events := make([]fsnotify.Event, 0)
 	go func() {
 		for {
 			select {
 			case event := <-w.Events:
 				if event.Op != fsnotify.Chmod {
-					go r.build(event)
+					events = append(events, event)
 				}
 				w.Remove(event.Name)
 				w.Add(event.Name)
+			case <-tick:
+				if len(events) == 0 {
+					continue
+				}
+				go r.build(events)
+				events = make([]fsnotify.Event, 0)
 			case <-r.context.Done():
 				break
 			}
@@ -73,16 +81,20 @@ func (r *Manager) Start() error {
 	return nil
 }
 
-func (r *Manager) build(event fsnotify.Event) {
+func (r *Manager) build(events []fsnotify.Event) {
 	r.gil.Do(func() {
 		defer func() {
 			r.gil = &sync.Once{}
 		}()
 		r.buildTransaction(func() error {
 			// time.Sleep(r.BuildDelay * time.Millisecond)
+			eventNames := make([]string, 0)
+			for _, event := range events {
+				eventNames = append(eventNames, event.Name)
+			}
 
 			now := time.Now()
-			r.Logger.Print("Rebuild on: %s", event.Name)
+			r.Logger.Print("Rebuild on: %s", strings.Join(eventNames, ", "))
 			cmd := exec.Command("go", "build", "-v", "-i", "-o", r.FullBuildPath())
 			err := r.runAndListen(cmd)
 			if err != nil {
