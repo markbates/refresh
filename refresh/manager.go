@@ -95,7 +95,7 @@ func (r *Manager) build(events []fsnotify.Event) {
 
 			now := time.Now()
 			r.Logger.Print("Rebuild on: %s", strings.Join(eventNames, ", "))
-			cmd := exec.Command("go", "build", "-v", "-i", "-o", r.FullBuildPath())
+			cmd := exec.Command("go", "build", "-v", "-i", "-o", r.FullBuildPath(), r.Configuration.BuildTargetPath)
 			err := r.runAndListen(cmd)
 			if err != nil {
 				if strings.Contains(err.Error(), "no buildable Go source files") {

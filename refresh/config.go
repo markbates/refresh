@@ -17,6 +17,7 @@ type Configuration struct {
 	AppRoot            string        `yaml:"app_root"`
 	IgnoredFolders     []string      `yaml:"ignored_folders"`
 	IncludedExtensions []string      `yaml:"included_extensions"`
+	BuildTargetPath    string        `yaml:"build_target_path"`
 	BuildPath          string        `yaml:"build_path"`
 	BuildDelay         time.Duration `yaml:"build_delay"`
 	BinaryName         string        `yaml:"binary_name"`
