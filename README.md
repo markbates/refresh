@@ -2,7 +2,7 @@
 
 ## Rebuild and re-run your Go applications when files change.
 
-This project was inspired by [https://github.com/pilu/fresh](https:#github.com/pilu/fresh). Lack of updates and response from the maintainer, but a non-idiomatic codebase, numerous bugs, and lack of detailed reporting made the project a dead end for me to use. Enter `refresh`.
+This project was inspired by [https://github.com/pilu/fresh](https://github.com/pilu/fresh). Lack of updates and response from the maintainer, but a non-idiomatic codebase, numerous bugs, and lack of detailed reporting made the project a dead end for me to use. Enter `refresh`.
 
 This simple command line application will watch your files, trigger a build of your Go binary and restart the application for you.
 
