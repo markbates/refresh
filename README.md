@@ -70,6 +70,8 @@ build_path: /tmp
 # in order to help cut down on the amount of builds that occur, a delay
 # is used to let the extra events fly away.
 build_delay: 200ms
+# If you have a specific sub-directory of your project you want to build
+build_target_path : ""
 # what would you like to call the built binary:
 binary_name: refresh-build
 # any extra commands you want to send to the built binary when it is run:
