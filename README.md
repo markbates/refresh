@@ -34,6 +34,8 @@ Once you have your configuration all set up, all you need to do is run it:
 
 ```
 $ refresh run
+or
+$ refresh
 ```
 
 That's it! Now, as you change your code the binary will be re-built and re-started for you.
@@ -60,18 +62,24 @@ app_root: .
 ignored_folders:
   - vendor
   - log
+  - logs
   - tmp
+  - node_modules
+  - bin
+  - templates
 # a list of file extensions you want to watch for changes:
 included_extensions:
   - .go
+# If you have a specific sub-directory of your project you want to build
+build_target_path: ""
 # the directory you want to build your binary in:
 build_path: /tmp
 # `fsnotify` can trigger many events at once when you change a file.
 # in order to help cut down on the amount of builds that occur, a delay
 # is used to let the extra events fly away.
 build_delay: 200ms
-# If you have a specific sub-directory of your project you want to build
-build_target_path : ""
+# If you want to add flags to go build ([-v, -i] if empty for compatibility)
+build_flags: [-v, -i, -race]
 # what would you like to call the built binary:
 binary_name: refresh-build
 # any extra commands you want to send to the built binary when it is run:
@@ -80,4 +88,6 @@ command_flags: []
 command_env: []
 # do you want to use colors when printing out log messages:
 enable_colors: true
+# if you want to change the LogName (default to `refresh`)
+log_name: ""
 ```
