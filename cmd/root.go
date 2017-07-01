@@ -15,6 +15,9 @@ var RootCmd = &cobra.Command{
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		fmt.Printf("Refresh (%s)\n\n", Version)
 	},
+	Run: func(cmd *cobra.Command, args []string) {
+		Run(cfgFile)
+	},
 }
 
 func Execute() {
