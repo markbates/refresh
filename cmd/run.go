@@ -16,7 +16,7 @@ func init() {
 var runCmd = &cobra.Command{
 	Use:     "run",
 	Aliases: []string{"r", "start", "build", "watch"},
-	Short:   "watches your files and rebuilds/restarts your app accordingly.",
+	Short:   "(default) watches your files and rebuilds/restarts your app accordingly.",
 	Run: func(cmd *cobra.Command, args []string) {
 		Run(cfgFile)
 	},
