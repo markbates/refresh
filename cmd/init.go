@@ -22,6 +22,7 @@ var initCmd = &cobra.Command{
 			BuildTargetPath:    "",
 			BuildPath:          os.TempDir(),
 			BuildDelay:         200,
+			BuildFlags:         []string{"-v", "-i", "-race"},
 			BinaryName:         "refresh-build",
 			CommandFlags:       []string{},
 			CommandEnv:         []string{},

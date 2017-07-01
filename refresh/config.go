@@ -20,6 +20,7 @@ type Configuration struct {
 	BuildTargetPath    string        `yaml:"build_target_path"`
 	BuildPath          string        `yaml:"build_path"`
 	BuildDelay         time.Duration `yaml:"build_delay"`
+	BuildFlags         []string      `yaml:"build_flags,flow"`
 	BinaryName         string        `yaml:"binary_name"`
 	CommandFlags       []string      `yaml:"command_flags"`
 	CommandEnv         []string      `yaml:"command_env"`
@@ -42,7 +43,16 @@ func (c *Configuration) Load(path string) error {
 	if err != nil {
 		return err
 	}
-	return yaml.Unmarshal(data, c)
+	err = yaml.Unmarshal(data, c)
+	if err != nil {
+		return err
+	}
+	// when build_flags is empty set to [-v, -i]
+	// for compatibility with previous versions
+	if len(c.BuildFlags) == 0 {
+		c.BuildFlags = []string{"-v", "-i"}
+	}
+	return nil
 }
 
 func (c *Configuration) Dump(path string) error {
