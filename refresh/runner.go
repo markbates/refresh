@@ -36,11 +36,6 @@ func (m *Manager) runAndListen(cmd *exec.Cmd) error {
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 
-	// Set the environment variables from config
-	if len(m.CommandEnv) != 0 {
-		cmd.Env = append(m.CommandEnv, os.Environ()...)
-	}
-
 	err := cmd.Start()
 	if err != nil {
 		return fmt.Errorf("%s\n%s", err, stderr.String())
