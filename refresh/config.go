@@ -25,6 +25,7 @@ type Configuration struct {
 	CommandEnv         []string      `yaml:"command_env"`
 	EnableColors       bool          `yaml:"enable_colors"`
 	LogName            string        `yaml:"log_name"`
+	Debug              bool          `yaml:"-"`
 }
 
 func (c *Configuration) FullBuildPath() string {

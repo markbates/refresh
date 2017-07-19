@@ -34,6 +34,10 @@ func RunWithContext(cfgFile string, ctx context.Context) {
 		log.Fatalln(err)
 		os.Exit(-1)
 	}
+
+	if debug {
+		c.Debug = true
+	}
 	r := refresh.NewWithContext(c, ctx)
 	err = r.Start()
 	if err != nil {

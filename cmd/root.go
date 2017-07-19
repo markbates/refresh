@@ -8,6 +8,7 @@ import (
 )
 
 var cfgFile string
+var debug bool
 
 var RootCmd = &cobra.Command{
 	Use:   "refresh",
@@ -28,5 +29,6 @@ func Execute() {
 }
 
 func init() {
+	RootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "use delve to debug the app")
 	RootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "refresh.yml", "path to configuration file")
 }
