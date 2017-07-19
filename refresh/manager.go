@@ -45,20 +45,22 @@ func (r *Manager) Start() error {
 	w := NewWatcher(r)
 	w.Start()
 	go r.build(fsnotify.Event{Name: ":start:"})
-	go func() {
-		for {
-			select {
-			case event := <-w.Events:
-				if event.Op != fsnotify.Chmod {
-					go r.build(event)
+	if !r.Debug {
+		go func() {
+			for {
+				select {
+				case event := <-w.Events:
+					if event.Op != fsnotify.Chmod {
+						go r.build(event)
+					}
+					w.Remove(event.Name)
+					w.Add(event.Name)
+				case <-r.context.Done():
+					break
 				}
-				w.Remove(event.Name)
-				w.Add(event.Name)
-			case <-r.context.Done():
-				break
 			}
-		}
-	}()
+		}()
+	}
 	go func() {
 		for {
 			select {

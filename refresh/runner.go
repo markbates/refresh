@@ -19,7 +19,14 @@ func (m *Manager) runner() {
 			m.Logger.Success("Stopping: PID %d", pid)
 			cmd.Process.Kill()
 		}
-		cmd = exec.Command(m.FullBuildPath(), m.CommandFlags...)
+		if m.Debug {
+			bp := m.FullBuildPath()
+			args := []string{"exec", bp}
+			args = append(args, m.CommandFlags...)
+			cmd = exec.Command("dlv", args...)
+		} else {
+			cmd = exec.Command(m.FullBuildPath(), m.CommandFlags...)
+		}
 		go func() {
 			err := m.runAndListen(cmd)
 			if err != nil {
