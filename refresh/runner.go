@@ -21,7 +21,9 @@ func (m *Manager) runner() {
 		}
 		if m.Debug {
 			bp := m.FullBuildPath()
-			args := []string{"exec", bp}
+			var args []string
+			args = append(args, m.DebugFlags...)
+			args = append(args, []string{"exec", bp}...)
 			args = append(args, m.CommandFlags...)
 			cmd = exec.Command("dlv", args...)
 		} else {
