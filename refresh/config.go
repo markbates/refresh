@@ -27,6 +27,7 @@ type Configuration struct {
 	EnableColors       bool          `yaml:"enable_colors"`
 	LogName            string        `yaml:"log_name"`
 	Debug              bool          `yaml:"-"`
+	DebugFlags         []string      `yaml:"debug_flags"`
 }
 
 func (c *Configuration) FullBuildPath() string {
