@@ -8,12 +8,16 @@ import (
 )
 
 var cfgFile string
+var debug bool
 
 var RootCmd = &cobra.Command{
 	Use:   "refresh",
 	Short: "Refresh is a command line tool that builds and (re)starts your Go application everytime you save a Go or template file.",
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		fmt.Printf("Refresh (%s)\n\n", Version)
+	},
+	Run: func(cmd *cobra.Command, args []string) {
+		Run(cfgFile)
 	},
 }
 
@@ -25,5 +29,6 @@ func Execute() {
 }
 
 func init() {
+	RootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "use delve to debug the app")
 	RootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "refresh.yml", "path to configuration file")
 }

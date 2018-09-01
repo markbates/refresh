@@ -16,7 +16,7 @@ func init() {
 var runCmd = &cobra.Command{
 	Use:     "run",
 	Aliases: []string{"r", "start", "build", "watch"},
-	Short:   "watches your files and rebuilds/restarts your app accordingly.",
+	Short:   "(default) watches your files and rebuilds/restarts your app accordingly.",
 	Run: func(cmd *cobra.Command, args []string) {
 		Run(cfgFile)
 	},
@@ -33,6 +33,10 @@ func RunWithContext(cfgFile string, ctx context.Context) {
 	if err != nil {
 		log.Fatalln(err)
 		os.Exit(-1)
+	}
+
+	if debug {
+		c.Debug = true
 	}
 	r := refresh.NewWithContext(c, ctx)
 	err = r.Start()

@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"runtime"
 
 	"github.com/fatih/color"
 	"github.com/markbates/going/defaults"
@@ -19,6 +20,9 @@ type Logger struct {
 
 func NewLogger(c *Configuration) *Logger {
 	color.NoColor = !c.EnableColors
+	if runtime.GOOS == "windows" {
+		color.NoColor = true
+	}
 	lname := defaults.String(c.LogName, "refresh")
 	return &Logger{
 		log: log.New(os.Stdout, fmt.Sprintf("%s: ", lname), log.LstdFlags),

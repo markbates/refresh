@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/fsnotify/fsnotify"
+	"github.com/gobuffalo/envy"
 )
 
 type Manager struct {
@@ -45,20 +46,22 @@ func (r *Manager) Start() error {
 	w := NewWatcher(r)
 	w.Start()
 	go r.build(fsnotify.Event{Name: ":start:"})
-	go func() {
-		for {
-			select {
-			case event := <-w.Events:
-				if event.Op != fsnotify.Chmod {
-					go r.build(event)
+	if !r.Debug {
+		go func() {
+			for {
+				select {
+				case event := <-w.Events:
+					if event.Op != fsnotify.Chmod {
+						go r.build(event)
+					}
+					w.Remove(event.Name)
+					w.Add(event.Name)
+				case <-r.context.Done():
+					break
 				}
-				w.Remove(event.Name)
-				w.Add(event.Name)
-			case <-r.context.Done():
-				break
 			}
-		}
-	}()
+		}()
+	}
 	go func() {
 		for {
 			select {
@@ -79,11 +82,14 @@ func (r *Manager) build(event fsnotify.Event) {
 			r.gil = &sync.Once{}
 		}()
 		r.buildTransaction(func() error {
-			time.Sleep(r.BuildDelay * time.Millisecond)
+			// time.Sleep(r.BuildDelay * time.Millisecond)
 
 			now := time.Now()
 			r.Logger.Print("Rebuild on: %s", event.Name)
-			cmd := exec.Command("go", "build", "-v", "-i", "-o", r.FullBuildPath())
+			args := []string{"build", "-v", "-i"}
+			args = append(args, r.BuildFlags...)
+			args = append(args, "-o", r.FullBuildPath(), r.BuildTargetPath)
+			cmd := exec.Command(envy.Get("GO_BIN", "go"), args...)
 			err := r.runAndListen(cmd)
 			if err != nil {
 				if strings.Contains(err.Error(), "no buildable Go source files") {

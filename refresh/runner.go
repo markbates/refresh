@@ -23,7 +23,14 @@ func (m *Manager) runner() {
 				cmd.Process.Kill()
 			}
 		}
-		cmd = exec.Command(m.FullBuildPath(), m.CommandFlags...)
+		if m.Debug {
+			bp := m.FullBuildPath()
+			args := []string{"exec", bp}
+			args = append(args, m.CommandFlags...)
+			cmd = exec.Command("dlv", args...)
+		} else {
+			cmd = exec.Command(m.FullBuildPath(), m.CommandFlags...)
+		}
 		go func() {
 			err := m.runAndListen(cmd)
 			if err != nil {
@@ -39,6 +46,11 @@ func (m *Manager) runAndListen(cmd *exec.Cmd) error {
 	cmd.Stderr = mw
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
+
+	// Set the environment variables from config
+	if len(m.CommandEnv) != 0 {
+		cmd.Env = append(m.CommandEnv, os.Environ()...)
+	}
 
 	err := cmd.Start()
 	if err != nil {
