@@ -12,6 +12,7 @@ import (
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/gobuffalo/envy"
+	"github.com/gobuffalo/events"
 )
 
 type Manager struct {
@@ -51,6 +52,7 @@ func (r *Manager) Start() error {
 			for {
 				select {
 				case event := <-w.Events:
+					events.EmitPayload(EvtRaw, event)
 					if event.Op != fsnotify.Chmod {
 						go r.build(event)
 					}
@@ -84,14 +86,24 @@ func (r *Manager) build(event fsnotify.Event) {
 		r.buildTransaction(func() error {
 			// time.Sleep(r.BuildDelay * time.Millisecond)
 
+			payload := map[string]interface{}{
+				"event": event,
+			}
+
 			now := time.Now()
 			r.Logger.Print("Rebuild on: %s", event.Name)
+
 			args := []string{"build", "-v", "-i"}
 			args = append(args, r.BuildFlags...)
 			args = append(args, "-o", r.FullBuildPath(), r.BuildTargetPath)
 			cmd := exec.Command(envy.Get("GO_BIN", "go"), args...)
+			payload["cmd"] = cmd.Args
+
+			events.EmitPayload(EvtBuildStarted, payload)
+
 			err := r.runAndListen(cmd)
 			if err != nil {
+				events.EmitError(EvtErrBuild, err, payload)
 				if strings.Contains(err.Error(), "no buildable Go source files") {
 					r.cancelFunc()
 					log.Fatal(err)
@@ -100,6 +112,9 @@ func (r *Manager) build(event fsnotify.Event) {
 			}
 
 			tt := time.Since(now)
+			payload["pid"] = cmd.Process.Pid
+			payload["build_time"] = tt
+			events.EmitPayload(EvtBuildFinished, payload)
 			r.Logger.Success("Building Completed (PID: %d) (Time: %s)", cmd.Process.Pid, tt)
 			r.Restart <- true
 			return nil
