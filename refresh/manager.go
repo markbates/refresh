@@ -52,7 +52,7 @@ func (r *Manager) Start() error {
 			for {
 				select {
 				case event := <-w.Events:
-					events.EmitPayload(EvtRaw, event)
+					events.EmitPayload(EvtRaw, events.Payload{"event": event})
 					if event.Op != fsnotify.Chmod {
 						go r.build(event)
 					}
@@ -86,7 +86,7 @@ func (r *Manager) build(event fsnotify.Event) {
 		r.buildTransaction(func() error {
 			// time.Sleep(r.BuildDelay * time.Millisecond)
 
-			payload := map[string]interface{}{
+			payload := events.Payload{
 				"event": event,
 			}
 
