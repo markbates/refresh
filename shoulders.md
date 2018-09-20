@@ -15,6 +15,8 @@ Thank you to the following **GIANTS**:
 
 * [github.com/gobuffalo/events](https://godoc.org/github.com/gobuffalo/events)
 
+* [github.com/gobuffalo/mapi](https://godoc.org/github.com/gobuffalo/mapi)
+
 * [github.com/joho/godotenv](https://godoc.org/github.com/joho/godotenv)
 
 * [github.com/markbates/going/defaults](https://godoc.org/github.com/markbates/going/defaults)
