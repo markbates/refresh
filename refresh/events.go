@@ -4,5 +4,5 @@ const (
 	EvtRaw           = "refresh:raw"
 	EvtBuildStarted  = "refresh:build:started"
 	EvtBuildFinished = "refresh:build:finished"
-	EvtErrBuild      = "err:refresh:build"
+	EvtErrBuild      = "refresh:build:err"
 )
