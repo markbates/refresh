@@ -15,7 +15,15 @@ Thank you to the following **GIANTS**:
 
 * [github.com/gobuffalo/events](https://godoc.org/github.com/gobuffalo/events)
 
+* [github.com/gobuffalo/genny](https://godoc.org/github.com/gobuffalo/genny)
+
+* [github.com/gobuffalo/genny/gentest](https://godoc.org/github.com/gobuffalo/genny/gentest)
+
+* [github.com/gobuffalo/genny/movinglater/gotools/gomods](https://godoc.org/github.com/gobuffalo/genny/movinglater/gotools/gomods)
+
 * [github.com/gobuffalo/mapi](https://godoc.org/github.com/gobuffalo/mapi)
+
+* [github.com/gobuffalo/packr](https://godoc.org/github.com/gobuffalo/packr)
 
 * [github.com/joho/godotenv](https://godoc.org/github.com/joho/godotenv)
 
