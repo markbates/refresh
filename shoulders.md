@@ -17,8 +17,6 @@ Thank you to the following **GIANTS**:
 
 * [github.com/gobuffalo/genny](https://godoc.org/github.com/gobuffalo/genny)
 
-* [github.com/gobuffalo/genny/gentest](https://godoc.org/github.com/gobuffalo/genny/gentest)
-
 * [github.com/gobuffalo/genny/movinglater/gotools/gomods](https://godoc.org/github.com/gobuffalo/genny/movinglater/gotools/gomods)
 
 * [github.com/gobuffalo/mapi](https://godoc.org/github.com/gobuffalo/mapi)
@@ -30,6 +28,12 @@ Thank you to the following **GIANTS**:
 * [github.com/markbates/going/defaults](https://godoc.org/github.com/markbates/going/defaults)
 
 * [github.com/markbates/oncer](https://godoc.org/github.com/markbates/oncer)
+
+* [github.com/markbates/refresh](https://godoc.org/github.com/markbates/refresh)
+
+* [github.com/markbates/refresh/cmd](https://godoc.org/github.com/markbates/refresh/cmd)
+
+* [github.com/markbates/refresh/refresh](https://godoc.org/github.com/markbates/refresh/refresh)
 
 * [github.com/mattn/go-colorable](https://godoc.org/github.com/mattn/go-colorable)
 
@@ -44,14 +48,6 @@ Thank you to the following **GIANTS**:
 * [github.com/spf13/cobra](https://godoc.org/github.com/spf13/cobra)
 
 * [github.com/spf13/pflag](https://godoc.org/github.com/spf13/pflag)
-
-* [github.com/stretchr/testify/assert](https://godoc.org/github.com/stretchr/testify/assert)
-
-* [github.com/stretchr/testify/require](https://godoc.org/github.com/stretchr/testify/require)
-
-* [github.com/stretchr/testify/vendor/github.com/davecgh/go-spew/spew](https://godoc.org/github.com/stretchr/testify/vendor/github.com/davecgh/go-spew/spew)
-
-* [github.com/stretchr/testify/vendor/github.com/pmezard/go-difflib/difflib](https://godoc.org/github.com/stretchr/testify/vendor/github.com/pmezard/go-difflib/difflib)
 
 * [golang.org/x/crypto/ssh/terminal](https://godoc.org/golang.org/x/crypto/ssh/terminal)
 
