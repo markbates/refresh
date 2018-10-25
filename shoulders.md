@@ -5,25 +5,39 @@ github.com/markbates/refresh does not try to reinvent the wheel! Instead, it use
 Thank you to the following **GIANTS**:
 
 
+* [github.com/BurntSushi/toml](https://godoc.org/github.com/BurntSushi/toml)
+
 * [github.com/fatih/color](https://godoc.org/github.com/fatih/color)
 
 * [github.com/fsnotify/fsnotify](https://godoc.org/github.com/fsnotify/fsnotify)
 
 * [github.com/gobuffalo/buffalo-plugins/plugins](https://godoc.org/github.com/gobuffalo/buffalo-plugins/plugins)
 
+* [github.com/gobuffalo/buffalo-plugins/plugins/plugdeps](https://godoc.org/github.com/gobuffalo/buffalo-plugins/plugins/plugdeps)
+
 * [github.com/gobuffalo/envy](https://godoc.org/github.com/gobuffalo/envy)
 
 * [github.com/gobuffalo/events](https://godoc.org/github.com/gobuffalo/events)
+
+* [github.com/gobuffalo/flect](https://godoc.org/github.com/gobuffalo/flect)
+
+* [github.com/gobuffalo/flect/name](https://godoc.org/github.com/gobuffalo/flect/name)
 
 * [github.com/gobuffalo/genny](https://godoc.org/github.com/gobuffalo/genny)
 
 * [github.com/gobuffalo/genny/movinglater/gotools/gomods](https://godoc.org/github.com/gobuffalo/genny/movinglater/gotools/gomods)
 
+* [github.com/gobuffalo/logger](https://godoc.org/github.com/gobuffalo/logger)
+
 * [github.com/gobuffalo/mapi](https://godoc.org/github.com/gobuffalo/mapi)
+
+* [github.com/gobuffalo/meta](https://godoc.org/github.com/gobuffalo/meta)
 
 * [github.com/gobuffalo/packr](https://godoc.org/github.com/gobuffalo/packr)
 
 * [github.com/joho/godotenv](https://godoc.org/github.com/joho/godotenv)
+
+* [github.com/karrick/godirwalk](https://godoc.org/github.com/karrick/godirwalk)
 
 * [github.com/markbates/going/defaults](https://godoc.org/github.com/markbates/going/defaults)
 
@@ -34,6 +48,8 @@ Thank you to the following **GIANTS**:
 * [github.com/markbates/refresh/cmd](https://godoc.org/github.com/markbates/refresh/cmd)
 
 * [github.com/markbates/refresh/refresh](https://godoc.org/github.com/markbates/refresh/refresh)
+
+* [github.com/markbates/safe](https://godoc.org/github.com/markbates/safe)
 
 * [github.com/mattn/go-colorable](https://godoc.org/github.com/mattn/go-colorable)
 
