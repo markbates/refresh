@@ -33,7 +33,9 @@ Thank you to the following **GIANTS**:
 
 * [github.com/gobuffalo/meta](https://godoc.org/github.com/gobuffalo/meta)
 
-* [github.com/gobuffalo/packr](https://godoc.org/github.com/gobuffalo/packr)
+* [github.com/gobuffalo/packd](https://godoc.org/github.com/gobuffalo/packd)
+
+* [github.com/gobuffalo/syncx](https://godoc.org/github.com/gobuffalo/syncx)
 
 * [github.com/joho/godotenv](https://godoc.org/github.com/joho/godotenv)
 
@@ -51,13 +53,15 @@ Thank you to the following **GIANTS**:
 
 * [github.com/markbates/safe](https://godoc.org/github.com/markbates/safe)
 
-* [github.com/mattn/go-colorable](https://godoc.org/github.com/mattn/go-colorable)
-
-* [github.com/mattn/go-isatty](https://godoc.org/github.com/mattn/go-isatty)
-
 * [github.com/mitchellh/go-homedir](https://godoc.org/github.com/mitchellh/go-homedir)
 
 * [github.com/pkg/errors](https://godoc.org/github.com/pkg/errors)
+
+* [github.com/rogpeppe/go-internal/modfile](https://godoc.org/github.com/rogpeppe/go-internal/modfile)
+
+* [github.com/rogpeppe/go-internal/module](https://godoc.org/github.com/rogpeppe/go-internal/module)
+
+* [github.com/rogpeppe/go-internal/semver](https://godoc.org/github.com/rogpeppe/go-internal/semver)
 
 * [github.com/sirupsen/logrus](https://godoc.org/github.com/sirupsen/logrus)
 
