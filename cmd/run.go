@@ -38,9 +38,9 @@ func RunWithContext(cfgFile string, ctx context.Context) {
 		if err != ErrConfigNotExist {
 			log.Fatalln(err)
 			os.Exit(-1)
-		} else {
-			log.Println("No configuration loaded, proceeding with defaults")
 		}
+
+		log.Println("No configuration loaded, proceeding with defaults")
 	}
 
 	if len(c.Path) > 0 {
