@@ -41,8 +41,6 @@ Thank you to the following **GIANTS**:
 
 * [github.com/karrick/godirwalk](https://godoc.org/github.com/karrick/godirwalk)
 
-* [github.com/markbates/going/defaults](https://godoc.org/github.com/markbates/going/defaults)
-
 * [github.com/markbates/oncer](https://godoc.org/github.com/markbates/oncer)
 
 * [github.com/markbates/refresh](https://godoc.org/github.com/markbates/refresh)
