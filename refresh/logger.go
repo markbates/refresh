@@ -8,7 +8,6 @@ import (
 	"runtime"
 
 	"github.com/fatih/color"
-	"github.com/markbates/going/defaults"
 	homedir "github.com/mitchellh/go-homedir"
 )
 
@@ -23,9 +22,11 @@ func NewLogger(c *Configuration) *Logger {
 	if runtime.GOOS == "windows" {
 		color.NoColor = true
 	}
-	lname := defaults.String(c.LogName, "refresh")
+	if len(c.LogName) == 0 {
+		c.LogName = "refresh"
+	}
 	return &Logger{
-		log: log.New(os.Stdout, fmt.Sprintf("%s: ", lname), log.LstdFlags),
+		log: log.New(os.Stdout, fmt.Sprintf("%s: ", c.LogName), log.LstdFlags),
 	}
 }
 
