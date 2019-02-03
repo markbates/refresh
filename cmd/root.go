@@ -30,5 +30,5 @@ func Execute() {
 
 func init() {
 	RootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "use delve to debug the app")
-	RootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "refresh.yml", "path to configuration file")
+	RootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "path to configuration file")
 }

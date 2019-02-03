@@ -27,6 +27,7 @@ type Configuration struct {
 	EnableColors       bool          `yaml:"enable_colors"`
 	LogName            string        `yaml:"log_name"`
 	Debug              bool          `yaml:"-"`
+	Path               string        `yaml:"-"`
 }
 
 func (c *Configuration) FullBuildPath() string {
@@ -44,6 +45,7 @@ func (c *Configuration) Load(path string) error {
 	if err != nil {
 		return err
 	}
+	c.Path = path
 	return yaml.Unmarshal(data, c)
 }
 
