@@ -20,7 +20,7 @@ type Watcher struct {
 func NewWatcher(r *Manager) *Watcher {
 	var watcher filenotify.FileWatcher
 
-	if strings.HasPrefix(r.Watcher, "poll") {
+	if r.ForcePolling {
 		watcher = filenotify.NewPollingWatcher()
 	} else {
 		watcher, _ = filenotify.NewEventWatcher()
