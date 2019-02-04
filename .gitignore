@@ -2,7 +2,6 @@
 .DS_Store
 doc
 tmp
-pkg
 *.gem
 *.pid
 coverage

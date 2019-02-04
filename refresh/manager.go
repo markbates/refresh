@@ -52,7 +52,7 @@ func (r *Manager) Start() error {
 		go func() {
 			for {
 				select {
-				case event := <-w.Events:
+				case event := <-w.Events():
 					events.EmitPayload(EvtRaw, events.Payload{"event": event})
 					if event.Op != fsnotify.Chmod {
 						go r.build(event)
@@ -68,7 +68,7 @@ func (r *Manager) Start() error {
 	go func() {
 		for {
 			select {
-			case err := <-w.Errors:
+			case err := <-w.Errors():
 				r.Logger.Error(err)
 			case <-r.context.Done():
 				break

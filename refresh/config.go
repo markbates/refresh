@@ -26,6 +26,7 @@ type Configuration struct {
 	CommandEnv         []string      `yaml:"command_env"`
 	EnableColors       bool          `yaml:"enable_colors"`
 	LogName            string        `yaml:"log_name"`
+	Watcher            string        `yaml:"watcher,omitempty"`
 	Debug              bool          `yaml:"-"`
 	Path               string        `yaml:"-"`
 }
