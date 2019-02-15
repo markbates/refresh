@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/markbates/refresh/pkg/filenotify"
+	"github.com/markbates/refresh/filenotify"
 )
 
 type Watcher struct {
