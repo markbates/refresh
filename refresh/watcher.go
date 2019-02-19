@@ -8,24 +8,29 @@ import (
 	"strings"
 	"time"
 
-	"github.com/fsnotify/fsnotify"
+	"github.com/markbates/refresh/filenotify"
 )
 
 type Watcher struct {
-	*fsnotify.Watcher
+	filenotify.FileWatcher
 	*Manager
 	context context.Context
 }
 
 func NewWatcher(r *Manager) *Watcher {
-	w, _ := fsnotify.NewWatcher()
+	var watcher filenotify.FileWatcher
 
-	return &Watcher{
-		Watcher: w,
-		Manager: r,
-		context: r.context,
+	if r.ForcePolling {
+		watcher = filenotify.NewPollingWatcher()
+	} else {
+		watcher, _ = filenotify.NewEventWatcher()
 	}
 
+	return &Watcher{
+		FileWatcher: watcher,
+		Manager:     r,
+		context:     r.context,
+	}
 }
 
 func (w *Watcher) Start() {
