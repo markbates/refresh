@@ -13,15 +13,13 @@ Thank you to the following **GIANTS**:
 
 * [github.com/gobuffalo/events](https://godoc.org/github.com/gobuffalo/events)
 
-* [github.com/gobuffalo/genny](https://godoc.org/github.com/gobuffalo/genny)
+* [github.com/gobuffalo/gogen](https://godoc.org/github.com/gobuffalo/gogen)
 
 * [github.com/gobuffalo/packr/v2](https://godoc.org/github.com/gobuffalo/packr/v2)
 
 * [github.com/markbates/grift](https://godoc.org/github.com/markbates/grift)
 
 * [github.com/mattn/go-colorable](https://godoc.org/github.com/mattn/go-colorable)
-
-* [github.com/mattn/go-isatty](https://godoc.org/github.com/mattn/go-isatty)
 
 * [github.com/mitchellh/go-homedir](https://godoc.org/github.com/mitchellh/go-homedir)
 
