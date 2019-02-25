@@ -13,7 +13,7 @@ import (
 	"github.com/fsnotify/fsnotify"
 	"github.com/gobuffalo/envy"
 	"github.com/gobuffalo/events"
-	"github.com/gobuffalo/genny/movinglater/gotools/gomods"
+	"github.com/gobuffalo/gogen/gomods"
 )
 
 type Manager struct {
