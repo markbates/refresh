@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 )
 
 func (m *Manager) runner() {
@@ -31,6 +32,11 @@ func (m *Manager) runner() {
 			err := m.runAndListen(cmd)
 			if err != nil {
 				m.Logger.Error(err)
+
+				if m.RestartOnError {
+					time.Sleep(time.Second)
+					m.Restart <- true
+				}
 			}
 		}()
 	}

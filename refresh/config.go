@@ -27,6 +27,7 @@ type Configuration struct {
 	EnableColors       bool          `yaml:"enable_colors"`
 	LogName            string        `yaml:"log_name"`
 	ForcePolling       bool          `yaml:"force_polling,omitempty"`
+	RestartOnError     bool          `yaml:"restart_on_error"`
 	Debug              bool          `yaml:"-"`
 	Path               string        `yaml:"-"`
 }
