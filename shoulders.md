@@ -13,7 +13,7 @@ Thank you to the following **GIANTS**:
 
 * [github.com/gobuffalo/events](https://godoc.org/github.com/gobuffalo/events)
 
-* [github.com/gobuffalo/gogen](https://godoc.org/github.com/gobuffalo/gogen)
+* [github.com/gobuffalo/genny](https://godoc.org/github.com/gobuffalo/genny)
 
 * [github.com/gobuffalo/packr/v2](https://godoc.org/github.com/gobuffalo/packr/v2)
 
@@ -24,7 +24,5 @@ Thank you to the following **GIANTS**:
 * [github.com/mitchellh/go-homedir](https://godoc.org/github.com/mitchellh/go-homedir)
 
 * [github.com/spf13/cobra](https://godoc.org/github.com/spf13/cobra)
-
-* [golang.org/x/crypto](https://godoc.org/golang.org/x/crypto)
 
 * [gopkg.in/yaml.v2](https://godoc.org/gopkg.in/yaml.v2)
