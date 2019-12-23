@@ -11,9 +11,7 @@ import (
 	"time"
 
 	"github.com/fsnotify/fsnotify"
-	"github.com/gobuffalo/envy"
 	"github.com/gobuffalo/events"
-	"github.com/gobuffalo/genny/gogen/gomods"
 )
 
 type Manager struct {
@@ -95,12 +93,9 @@ func (r *Manager) build(event fsnotify.Event) {
 			r.Logger.Print("Rebuild on: %s", event.Name)
 
 			args := []string{"build", "-v"}
-			if !gomods.On() {
-				args = append(args, "-i")
-			}
 			args = append(args, r.BuildFlags...)
 			args = append(args, "-o", r.FullBuildPath(), r.BuildTargetPath)
-			cmd := exec.Command(envy.Get("GO_BIN", "go"), args...)
+			cmd := exec.Command("go", args...)
 			payload["cmd"] = cmd.Args
 
 			events.EmitPayload(EvtBuildStarted, payload)
