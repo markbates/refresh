@@ -24,6 +24,7 @@ type Configuration struct {
 	BinaryName         string        `yaml:"binary_name"`
 	CommandFlags       []string      `yaml:"command_flags"`
 	CommandEnv         []string      `yaml:"command_env"`
+	FileEnv            string        `yaml:"file_env"`
 	EnableColors       bool          `yaml:"enable_colors"`
 	LogName            string        `yaml:"log_name"`
 	ForcePolling       bool          `yaml:"force_polling,omitempty"`

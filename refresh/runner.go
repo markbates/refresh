@@ -7,6 +7,8 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+
+	"github.com/joho/godotenv"
 )
 
 func (m *Manager) runner() {
@@ -46,6 +48,14 @@ func (m *Manager) runAndListen(cmd *exec.Cmd) error {
 	// Set the environment variables from config
 	if len(m.CommandEnv) != 0 {
 		cmd.Env = append(m.CommandEnv, os.Environ()...)
+	}
+
+	// Load environment variables from a .env file
+	if m.FileEnv != "" {
+		err := godotenv.Load(m.FileEnv)
+		if err != nil {
+			return fmt.Errorf("%s\n%s", err, stderr.String())
+		}
 	}
 
 	err := cmd.Start()
