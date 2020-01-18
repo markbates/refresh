@@ -4,7 +4,7 @@ builds:
     env:
       - CGO_ENABLED=0
     ldflags:
-      - -s -w -X "github.com/markbates/refresh/main.Version={{.Tag}}"
+      - -s -w -X "github.com/markbates/refresh.Version={{.Tag}}"
     goos:
       - darwin
       - linux
