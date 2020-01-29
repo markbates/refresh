@@ -26,18 +26,17 @@ var runCmd = &cobra.Command{
 	},
 }
 
-func Run(cfgFile string) {
+func Run(cfgFile string) error {
 	ctx := context.Background()
-	RunWithContext(cfgFile, ctx)
+	return RunWithContext(cfgFile, ctx)
 }
 
-func RunWithContext(cfgFile string, ctx context.Context) {
+func RunWithContext(cfgFile string, ctx context.Context) error {
 	c := &refresh.Configuration{}
 
 	if err := loadConfig(c, cfgFile); err != nil {
 		if err != ErrConfigNotExist {
-			log.Fatalln(err)
-			os.Exit(-1)
+			return err
 		}
 
 		log.Println("No configuration loaded, proceeding with defaults")
@@ -52,10 +51,7 @@ func RunWithContext(cfgFile string, ctx context.Context) {
 	}
 
 	r := refresh.NewWithContext(c, ctx)
-	if err := r.Start(); err != nil {
-		log.Fatalln(err)
-		os.Exit(-1)
-	}
+	return r.Start()
 }
 
 func loadConfig(c *refresh.Configuration, path string) error {
