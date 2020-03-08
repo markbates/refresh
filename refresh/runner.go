@@ -54,7 +54,7 @@ func (m *Manager) runAndListen(cmd *exec.Cmd) error {
 
 	var stderr bytes.Buffer
 
-	cmd.Stderr = io.MultiWriter(&stderr, m.Stderr)
+	cmd.Stderr = io.MultiWriter(&stderr, cmd.Stderr)
 
 	// Set the environment variables from config
 	if len(m.CommandEnv) != 0 {
