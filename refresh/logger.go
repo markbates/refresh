@@ -2,6 +2,7 @@ package refresh
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"path"
@@ -25,8 +26,12 @@ func NewLogger(c *Configuration) *Logger {
 	if len(c.LogName) == 0 {
 		c.LogName = "refresh"
 	}
+	var w io.Writer = c.Stdout
+	if w == nil {
+		w = os.Stdout
+	}
 	return &Logger{
-		log: log.New(os.Stdout, fmt.Sprintf("%s: ", c.LogName), log.LstdFlags),
+		log: log.New(w, fmt.Sprintf("%s: ", c.LogName), log.LstdFlags),
 	}
 }
 

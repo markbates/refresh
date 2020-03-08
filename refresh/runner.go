@@ -37,11 +37,24 @@ func (m *Manager) runner() {
 }
 
 func (m *Manager) runAndListen(cmd *exec.Cmd) error {
+	cmd.Stderr = m.Stderr
+	if cmd.Stderr == nil {
+		cmd.Stderr = os.Stderr
+	}
+
+	cmd.Stdin = m.Stdin
+	if cmd.Stdin == nil {
+		cmd.Stdin = os.Stdin
+	}
+
+	cmd.Stdout = m.Stdout
+	if cmd.Stdout == nil {
+		cmd.Stdout = os.Stdout
+	}
+
 	var stderr bytes.Buffer
-	mw := io.MultiWriter(&stderr, os.Stderr)
-	cmd.Stderr = mw
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
+
+	cmd.Stderr = io.MultiWriter(&stderr, m.Stderr)
 
 	// Set the environment variables from config
 	if len(m.CommandEnv) != 0 {
