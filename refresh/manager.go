@@ -15,12 +15,12 @@ import (
 
 type Manager struct {
 	*Configuration
+	ID         string
 	Logger     *Logger
 	Restart    chan bool
-	gil        *sync.Once
-	ID         string
-	context    context.Context
 	cancelFunc context.CancelFunc
+	context    context.Context
+	gil        *sync.Once
 }
 
 func New(c *Configuration) *Manager {
@@ -31,12 +31,12 @@ func NewWithContext(c *Configuration, ctx context.Context) *Manager {
 	ctx, cancelFunc := context.WithCancel(ctx)
 	m := &Manager{
 		Configuration: c,
+		ID:            ID(),
 		Logger:        NewLogger(c),
 		Restart:       make(chan bool),
-		gil:           &sync.Once{},
-		ID:            ID(),
-		context:       ctx,
 		cancelFunc:    cancelFunc,
+		context:       ctx,
+		gil:           &sync.Once{},
 	}
 	return m
 }

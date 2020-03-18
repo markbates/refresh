@@ -3,6 +3,7 @@ package refresh
 import (
 	"crypto/md5"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
 	"path"
@@ -15,20 +16,23 @@ import (
 
 type Configuration struct {
 	AppRoot            string        `yaml:"app_root"`
+	BinaryName         string        `yaml:"binary_name"`
+	BuildDelay         time.Duration `yaml:"build_delay"`
+	BuildFlags         []string      `yaml:"build_flags"`
+	BuildPath          string        `yaml:"build_path"`
+	BuildTargetPath    string        `yaml:"build_target_path"`
+	CommandEnv         []string      `yaml:"command_env"`
+	CommandFlags       []string      `yaml:"command_flags"`
+	EnableColors       bool          `yaml:"enable_colors"`
+	ForcePolling       bool          `yaml:"force_polling,omitempty"`
 	IgnoredFolders     []string      `yaml:"ignored_folders"`
 	IncludedExtensions []string      `yaml:"included_extensions"`
-	BuildTargetPath    string        `yaml:"build_target_path"`
-	BuildPath          string        `yaml:"build_path"`
-	BuildFlags         []string      `yaml:"build_flags"`
-	BuildDelay         time.Duration `yaml:"build_delay"`
-	BinaryName         string        `yaml:"binary_name"`
-	CommandFlags       []string      `yaml:"command_flags"`
-	CommandEnv         []string      `yaml:"command_env"`
-	EnableColors       bool          `yaml:"enable_colors"`
 	LogName            string        `yaml:"log_name"`
-	ForcePolling       bool          `yaml:"force_polling,omitempty"`
 	Debug              bool          `yaml:"-"`
 	Path               string        `yaml:"-"`
+	Stderr             io.Writer     `yaml:"-"`
+	Stdin              io.Reader     `yaml:"-"`
+	Stdout             io.Writer     `yaml:"-"`
 }
 
 func (c *Configuration) FullBuildPath() string {
