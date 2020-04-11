@@ -56,7 +56,8 @@ err = http.ListenAndServe(":3000", web.ErrorChecker(m))
 # The root of your application relative to your configuration file.
 app_root: .
 # List of folders you don't want to watch. The more folders you ignore, the 
-# faster things will be.
+# faster things will be. For cross-platform compatibility, use forward slashes
+# as the path separator (i.e. 'cmd/web/client', not 'cmd\\web\\client').
 ignored_folders:
   - vendor
   - log

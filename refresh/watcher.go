@@ -66,15 +66,20 @@ func (w *Watcher) Start() {
 }
 
 func (w Watcher) isIgnoredFolder(path string) bool {
-	paths := strings.Split(path, "/")
-	if len(paths) <= 0 {
-		return false
-	}
-
 	for _, e := range w.IgnoredFolders {
-		if strings.TrimSpace(e) == paths[0] {
-			return true
+		rel, err := filepath.Rel(e, path)
+		if err != nil {
+			// unable to construct relative path, not an ignored folder
+			continue
 		}
+
+		if strings.Contains(rel, "..") {
+			// to construct a relative path requires going up the directory tree, not
+			// an ignored folder
+			continue
+		}
+
+		return true
 	}
 	return false
 }
