@@ -71,7 +71,9 @@ func (r *Manager) Start() error {
 			}
 		}
 	}()
-	r.runner()
+	if !r.DisableRun {
+		r.runner()
+	}
 	return nil
 }
 
