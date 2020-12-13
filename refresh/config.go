@@ -28,6 +28,7 @@ type Configuration struct {
 	IgnoredFolders     []string      `yaml:"ignored_folders"`
 	IncludedExtensions []string      `yaml:"included_extensions"`
 	LogName            string        `yaml:"log_name"`
+	DisableRun         bool          `yaml:"disable_run"`
 	Debug              bool          `yaml:"-"`
 	Path               string        `yaml:"-"`
 	Stderr             io.Writer     `yaml:"-"`
