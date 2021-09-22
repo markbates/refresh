@@ -16,14 +16,13 @@ var RootCmd = &cobra.Command{
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		fmt.Printf("Refresh (%s)\n\n", Version)
 	},
-	Run: func(cmd *cobra.Command, args []string) {
-		Run(cfgFile)
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return Run(cfgFile)
 	},
 }
 
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
-		fmt.Println(err)
 		os.Exit(-1)
 	}
 }
