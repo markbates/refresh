@@ -47,6 +47,7 @@ func (r *Manager) Start() error {
 	go r.build(fsnotify.Event{Name: ":start:"})
 	if !r.Debug {
 		go func() {
+		LoopRebuilder:
 			for {
 				select {
 				case event := <-w.Events():
@@ -56,18 +57,19 @@ func (r *Manager) Start() error {
 					w.Remove(event.Name)
 					w.Add(event.Name)
 				case <-r.context.Done():
-					break
+					break LoopRebuilder
 				}
 			}
 		}()
 	}
 	go func() {
+	LoopErrorWatcher:
 		for {
 			select {
 			case err := <-w.Errors():
 				r.Logger.Error(err)
 			case <-r.context.Done():
-				break
+				break LoopErrorWatcher
 			}
 		}
 	}()
