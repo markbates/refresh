@@ -11,28 +11,33 @@ import (
 
 func (m *Manager) runner() {
 	var cmd *exec.Cmd
+Loop:
 	for {
-		<-m.Restart
-		if cmd != nil {
-			// kill the previous command
-			pid := cmd.Process.Pid
-			m.Logger.Success("Stopping: PID %d", pid)
-			cmd.Process.Kill()
-		}
-		if m.Debug {
-			bp := m.FullBuildPath()
-			args := []string{"exec", bp}
-			args = append(args, m.CommandFlags...)
-			cmd = exec.Command("dlv", args...)
-		} else {
-			cmd = exec.Command(m.FullBuildPath(), m.CommandFlags...)
-		}
-		go func() {
-			err := m.runAndListen(cmd)
-			if err != nil {
-				m.Logger.Error(err)
+		select {
+		case <-m.Restart:
+			if cmd != nil {
+				// kill the previous command
+				pid := cmd.Process.Pid
+				m.Logger.Success("Stopping: PID %d", pid)
+				cmd.Process.Kill()
 			}
-		}()
+			if m.Debug {
+				bp := m.FullBuildPath()
+				args := []string{"exec", bp}
+				args = append(args, m.CommandFlags...)
+				cmd = exec.Command("dlv", args...)
+			} else {
+				cmd = exec.Command(m.FullBuildPath(), m.CommandFlags...)
+			}
+			go func() {
+				err := m.runAndListen(cmd)
+				if err != nil {
+					m.Logger.Error(err)
+				}
+			}()
+		case <-m.context.Done():
+			break Loop
+		}
 	}
 }
 
