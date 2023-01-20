@@ -4,14 +4,16 @@ import (
 	"context"
 	"fmt"
 	"log"
+
 	"os"
 	"os/exec"
 	"strings"
 	"sync"
 	"time"
 
+	"lrserver"
+
 	"github.com/fsnotify/fsnotify"
-	"github.com/jaschaephraim/lrserver"
 )
 
 type Manager struct {
@@ -43,11 +45,12 @@ func NewWithContext(c *Configuration, ctx context.Context) *Manager {
 }
 
 func (r *Manager) Start() error {
+	var lr *lrserver.Server
 	w := NewWatcher(r)
 	w.Start()
 	// Create and start LiveReload server
-	lr := lrserver.New(lrserver.DefaultName, lrserver.DefaultPort)
 	if r.EnableLivereload {
+		lr = lrserver.New(lrserver.DefaultName, lrserver.DefaultPort)
 		go lr.ListenAndServe()
 	}
 
@@ -86,10 +89,6 @@ func (r *Manager) Start() error {
 	}()
 	r.runner()
 	return nil
-}
-
-func (r *Manager) statrWS() {
-
 }
 
 func (r *Manager) build(event fsnotify.Event) {

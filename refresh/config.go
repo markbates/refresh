@@ -4,7 +4,7 @@ import (
 	"crypto/md5"
 	"fmt"
 	"io"
-	"io/ioutil"
+
 	"os"
 	"path"
 	"runtime"
@@ -28,7 +28,7 @@ type Configuration struct {
 	IgnoredFolders     []string      `yaml:"ignored_folders"`
 	IncludedExtensions []string      `yaml:"included_extensions"`
 	LogName            string        `yaml:"log_name"`
-	EnableLivereload   bool          `yaml:"enable_livereload,omitempty"`
+	EnableLivereload   bool          `yaml:"enable_livereload"`
 	Debug              bool          `yaml:"-"`
 	Path               string        `yaml:"-"`
 	Stderr             io.Writer     `yaml:"-"`
@@ -47,7 +47,8 @@ func (c *Configuration) FullBuildPath() string {
 }
 
 func (c *Configuration) Load(path string) error {
-	data, err := ioutil.ReadFile(path)
+	// "io/ioutil" has been deprecated since Go 1.16: As of Go 1.16, the same functionality is now provided by package io or package os, and those implementations should be preferred in new code. See the specific function documentation for details.
+	data, err := os.ReadFile(path)
 	if err != nil {
 		return err
 	}
@@ -60,7 +61,17 @@ func (c *Configuration) Dump(path string) error {
 	if err != nil {
 		return err
 	}
-	return ioutil.WriteFile(path, data, 0666)
+
+	f, err := os.OpenFile(path, os.O_CREATE|os.O_WRONLY|os.O_APPEND, os.FileMode(0666))
+	if err != nil {
+		return err
+	}
+	_, err = f.Write(data)
+	if err != nil {
+		return err
+	}
+	// "io/ioutil" has been deprecated since Go 1.16: As of Go 1.16, the same functionality is now provided by package io or package os, and those implementations should be preferred in new code. See the specific function documentation for details.
+	return nil
 }
 
 func ID() string {
