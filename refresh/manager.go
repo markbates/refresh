@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/fsnotify/fsnotify"
+	"github.com/jaschaephraim/lrserver"
 )
 
 type Manager struct {
@@ -44,35 +45,51 @@ func NewWithContext(c *Configuration, ctx context.Context) *Manager {
 func (r *Manager) Start() error {
 	w := NewWatcher(r)
 	w.Start()
+	// Create and start LiveReload server
+	lr := lrserver.New(lrserver.DefaultName, lrserver.DefaultPort)
+	if r.EnableLivereload {
+		go lr.ListenAndServe()
+	}
+
 	go r.build(fsnotify.Event{Name: ":start:"})
 	if !r.Debug {
 		go func() {
+		OuterLoop:
 			for {
 				select {
 				case event := <-w.Events():
 					if event.Op != fsnotify.Chmod {
 						go r.build(event)
 					}
+
 					w.Remove(event.Name)
 					w.Add(event.Name)
+					if r.EnableLivereload {
+						lr.Reload(event.Name)
+					}
 				case <-r.context.Done():
-					break
+					break OuterLoop
 				}
 			}
 		}()
 	}
 	go func() {
+	OuterLoop:
 		for {
 			select {
 			case err := <-w.Errors():
 				r.Logger.Error(err)
 			case <-r.context.Done():
-				break
+				break OuterLoop
 			}
 		}
 	}()
 	r.runner()
 	return nil
+}
+
+func (r *Manager) statrWS() {
+
 }
 
 func (r *Manager) build(event fsnotify.Event) {

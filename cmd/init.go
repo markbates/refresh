@@ -30,6 +30,7 @@ var initCmd = &cobra.Command{
 			CommandFlags:       []string{},
 			CommandEnv:         []string{},
 			EnableColors:       true,
+			EnableLivereload:   false,
 		}
 
 		if cfgFile == "" {

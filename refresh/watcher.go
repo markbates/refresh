@@ -39,7 +39,7 @@ func (w *Watcher) Start() {
 			err := filepath.Walk(w.AppRoot, func(path string, info os.FileInfo, err error) error {
 				if info == nil {
 					w.cancelFunc()
-					return errors.New("nil directory!")
+					return errors.New("nil directory")
 				}
 				if info.IsDir() {
 					if strings.HasPrefix(filepath.Base(path), "_") {
