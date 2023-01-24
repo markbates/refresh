@@ -4,14 +4,14 @@ import (
 	"crypto/md5"
 	"fmt"
 	"io"
-	"io/ioutil"
+
 	"os"
 	"path"
 	"runtime"
 	"strings"
 	"time"
 
-	yaml "gopkg.in/yaml.v2"
+	yaml "gopkg.in/yaml.v3"
 )
 
 type Configuration struct {
@@ -21,8 +21,8 @@ type Configuration struct {
 	BuildFlags         []string      `yaml:"build_flags"`
 	BuildPath          string        `yaml:"build_path"`
 	BuildTargetPath    string        `yaml:"build_target_path"`
-	CommandEnv         []string      `yaml:"command_env"`
 	CommandFlags       []string      `yaml:"command_flags"`
+	CommandEnv         []string      `yaml:"command_env"`
 	EnableColors       bool          `yaml:"enable_colors"`
 	ForcePolling       bool          `yaml:"force_polling,omitempty"`
 	IgnoredFolders     []string      `yaml:"ignored_folders"`
@@ -33,6 +33,14 @@ type Configuration struct {
 	Stderr             io.Writer     `yaml:"-"`
 	Stdin              io.Reader     `yaml:"-"`
 	Stdout             io.Writer     `yaml:"-"`
+	Livereload         Livereload
+}
+
+type Livereload struct {
+	Enable          bool     `yaml:"enable"`
+	Port            uint16   `yaml:"port"`
+	IncludedFolders []string `yaml:"included_folders"`
+	Tasks           []string `yaml:"tasks"`
 }
 
 func (c *Configuration) FullBuildPath() string {
@@ -46,12 +54,24 @@ func (c *Configuration) FullBuildPath() string {
 }
 
 func (c *Configuration) Load(path string) error {
-	data, err := ioutil.ReadFile(path)
+	// "io/ioutil" has been deprecated since Go 1.16: As of Go 1.16,
+	// the same functionality is now provided by package io or package os,
+	// and those implementations should be preferred in new code.
+	data, err := os.ReadFile(path)
 	if err != nil {
 		return err
 	}
 	c.Path = path
-	return yaml.Unmarshal(data, c)
+	err = yaml.Unmarshal(data, c)
+	if err != nil {
+		return err
+	}
+
+	if c.Livereload.Port == 0 {
+		c.Livereload.Port = 35729
+	}
+
+	return nil
 }
 
 func (c *Configuration) Dump(path string) error {
@@ -59,7 +79,16 @@ func (c *Configuration) Dump(path string) error {
 	if err != nil {
 		return err
 	}
-	return ioutil.WriteFile(path, data, 0666)
+
+	f, err := os.OpenFile(path, os.O_CREATE|os.O_WRONLY|os.O_APPEND, os.FileMode(0666))
+	if err != nil {
+		return err
+	}
+	_, err = f.Write(data)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func ID() string {
