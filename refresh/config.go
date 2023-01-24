@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	yaml "gopkg.in/yaml.v2"
+	yaml "gopkg.in/yaml.v3"
 )
 
 type Configuration struct {
@@ -21,19 +21,26 @@ type Configuration struct {
 	BuildFlags         []string      `yaml:"build_flags"`
 	BuildPath          string        `yaml:"build_path"`
 	BuildTargetPath    string        `yaml:"build_target_path"`
-	CommandEnv         []string      `yaml:"command_env"`
 	CommandFlags       []string      `yaml:"command_flags"`
+	CommandEnv         []string      `yaml:"command_env"`
 	EnableColors       bool          `yaml:"enable_colors"`
 	ForcePolling       bool          `yaml:"force_polling,omitempty"`
 	IgnoredFolders     []string      `yaml:"ignored_folders"`
 	IncludedExtensions []string      `yaml:"included_extensions"`
 	LogName            string        `yaml:"log_name"`
-	EnableLivereload   bool          `yaml:"enable_livereload"`
 	Debug              bool          `yaml:"-"`
 	Path               string        `yaml:"-"`
 	Stderr             io.Writer     `yaml:"-"`
 	Stdin              io.Reader     `yaml:"-"`
 	Stdout             io.Writer     `yaml:"-"`
+	Livereload         Livereload
+}
+
+type Livereload struct {
+	Enable          bool     `yaml:"enable"`
+	Port            uint16   `yaml:"port"`
+	IncludedFolders []string `yaml:"included_folders"`
+	Tasks           []string `yaml:"tasks"`
 }
 
 func (c *Configuration) FullBuildPath() string {
@@ -47,13 +54,24 @@ func (c *Configuration) FullBuildPath() string {
 }
 
 func (c *Configuration) Load(path string) error {
-	// "io/ioutil" has been deprecated since Go 1.16: As of Go 1.16, the same functionality is now provided by package io or package os, and those implementations should be preferred in new code. See the specific function documentation for details.
+	// "io/ioutil" has been deprecated since Go 1.16: As of Go 1.16,
+	// the same functionality is now provided by package io or package os,
+	// and those implementations should be preferred in new code.
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return err
 	}
 	c.Path = path
-	return yaml.Unmarshal(data, c)
+	err = yaml.Unmarshal(data, c)
+	if err != nil {
+		return err
+	}
+
+	if c.Livereload.Port == 0 {
+		c.Livereload.Port = 35729
+	}
+
+	return nil
 }
 
 func (c *Configuration) Dump(path string) error {
@@ -70,7 +88,6 @@ func (c *Configuration) Dump(path string) error {
 	if err != nil {
 		return err
 	}
-	// "io/ioutil" has been deprecated since Go 1.16: As of Go 1.16, the same functionality is now provided by package io or package os, and those implementations should be preferred in new code. See the specific function documentation for details.
 	return nil
 }
 
