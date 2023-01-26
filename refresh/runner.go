@@ -52,8 +52,9 @@ func (m *Manager) runAndListen(cmd *exec.Cmd) error {
 		cmd.Stdout = os.Stdout
 	}
 
-	var stderr bytes.Buffer
-
+	var (
+		stderr bytes.Buffer
+	)
 	cmd.Stderr = io.MultiWriter(&stderr, cmd.Stderr)
 
 	// Set the environment variables from config
@@ -66,10 +67,41 @@ func (m *Manager) runAndListen(cmd *exec.Cmd) error {
 		return fmt.Errorf("%s\n%s", err, stderr.String())
 	}
 
-	m.Logger.Success("Running: %s (PID: %d)", strings.Join(cmd.Args, " "), cmd.Process.Pid)
+	m.Logger.Success("Main Running: %s (PID: %d)", strings.Join(cmd.Args, " "), cmd.Process.Pid)
+
 	err = cmd.Wait()
 	if err != nil {
 		return fmt.Errorf("%s\n%s", err, stderr.String())
+	}
+	return nil
+}
+
+func (m *Manager) runTasks() error {
+	var taskCmds []*exec.Cmd
+	if len(m.Livereload.Tasks) != 0 {
+		for _, v := range m.Livereload.Tasks {
+			ss := strings.Split(v, " ")
+			taskCmds = append(taskCmds, exec.Command(ss[0], ss[1:]...))
+		}
+		cmd := taskCmds[0]
+		err := cmd.Start()
+		if err != nil {
+			return err
+		}
+		m.Logger.Success("Task Running: %s", strings.Join(cmd.Args, " "))
+
+		for _, v := range taskCmds[1:] {
+			pipe, err := v.StdoutPipe()
+			if err != nil {
+				return err
+			}
+			m.Logger.Success("Task Running: %s", strings.Join(v.Args, " "))
+			cmd.Stdin = pipe
+		}
+
+		if err := cmd.Wait(); err != nil {
+			return err
+		}
 	}
 	return nil
 }

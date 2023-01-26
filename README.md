@@ -50,12 +50,24 @@ err = http.ListenAndServe(":3000", web.ErrorChecker(m))
 ...
 ```
 
+## Using livereload.js
+
+[What is LiveReload?](https://github.com/livereload/livereload-js#what-is-livereload)
+
+This script is meant to be included into the web pages you want to monitor, like this:
+
+```js
+...
+<script src="http://localhost:35729/livereload.js"></script>
+...
+```
+
 ## Configuration Settings
 
 ```yml
 # The root of your application relative to your configuration file.
 app_root: .
-# List of folders you don't want to watch. The more folders you ignore, the 
+# List of folders you don't want to watch. The more folders you ignore, the
 # faster things will be.
 ignored_folders:
   - vendor
@@ -70,7 +82,7 @@ build_path: /tmp
 # unnecessary builds, a delay is used to ignore extra events.
 build_delay: 200ms
 # If you have a specific sub-directory of your project you want to build.
-build_target_path : "./cmd/cli"
+build_target_path: "./cmd/cli"
 # What you would like to name the built binary.
 binary_name: refresh-build
 # Extra command line flags you want passed to the built binary when running it.
@@ -79,4 +91,14 @@ command_flags: ["--env", "development"]
 command_env: ["PORT=1234"]
 # If you want colors to be used when printing out log messages.
 enable_colors: true
+# If you want livereload websocket server to be used.
+livereload:
+  # Enable livereload
+  enable: false
+  # server port
+  port: 35729
+  # Run commands when you change in included_folders files.
+  tasks: []
+  # List of folders you want to watch.
+  included_folders: []
 ```

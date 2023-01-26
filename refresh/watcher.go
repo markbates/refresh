@@ -12,24 +12,30 @@ import (
 )
 
 type Watcher struct {
-	filenotify.FileWatcher
+	MainWatcher       filenotify.FileWatcher
+	LivereloadWatcher filenotify.FileWatcher
 	*Manager
 	context context.Context
 }
 
 func NewWatcher(r *Manager) *Watcher {
-	var watcher filenotify.FileWatcher
+	var (
+		lr, main filenotify.FileWatcher
+	)
 
 	if r.ForcePolling {
-		watcher = filenotify.NewPollingWatcher()
+		main = filenotify.NewPollingWatcher()
 	} else {
-		watcher, _ = filenotify.NewEventWatcher()
+		main, _ = filenotify.NewEventWatcher()
 	}
 
+	lr, _ = filenotify.NewEventWatcher()
+
 	return &Watcher{
-		FileWatcher: watcher,
-		Manager:     r,
-		context:     r.context,
+		MainWatcher:       main,
+		LivereloadWatcher: lr,
+		Manager:           r,
+		context:           r.context,
 	}
 }
 
@@ -37,10 +43,18 @@ func (w *Watcher) Start() {
 	go func() {
 		for {
 			err := filepath.Walk(w.AppRoot, func(path string, info os.FileInfo, err error) error {
+				if w.isLivereloaderEnable() {
+					for _, v := range w.Livereload.IncludedFolders {
+						w.IgnoredFolders = append(w.IgnoredFolders, v)
+						w.LivereloadWatcher.Add(v)
+					}
+				}
+
 				if info == nil {
 					w.cancelFunc()
-					return errors.New("nil directory!")
+					return errors.New("nil directory")
 				}
+
 				if info.IsDir() {
 					if strings.HasPrefix(filepath.Base(path), "_") {
 						return filepath.SkipDir
@@ -49,9 +63,11 @@ func (w *Watcher) Start() {
 						return filepath.SkipDir
 					}
 				}
+
 				if w.isWatchedFile(path) {
-					w.Add(path)
+					w.MainWatcher.Add(path)
 				}
+
 				return nil
 			})
 

@@ -4,25 +4,24 @@ github.com/markbates/refresh does not try to reinvent the wheel! Instead, it use
 
 Thank you to the following **GIANTS**:
 
+- [github.com/fatih/color](https://godoc.org/github.com/fatih/color)
 
-* [github.com/fatih/color](https://godoc.org/github.com/fatih/color)
+- [github.com/fsnotify/fsnotify](https://godoc.org/github.com/fsnotify/fsnotify)
 
-* [github.com/fsnotify/fsnotify](https://godoc.org/github.com/fsnotify/fsnotify)
+- [github.com/gobuffalo/envy](https://godoc.org/github.com/gobuffalo/envy)
 
-* [github.com/gobuffalo/envy](https://godoc.org/github.com/gobuffalo/envy)
+- [github.com/gobuffalo/events](https://godoc.org/github.com/gobuffalo/events)
 
-* [github.com/gobuffalo/events](https://godoc.org/github.com/gobuffalo/events)
+- [github.com/gobuffalo/genny](https://godoc.org/github.com/gobuffalo/genny)
 
-* [github.com/gobuffalo/genny](https://godoc.org/github.com/gobuffalo/genny)
+- [github.com/gobuffalo/packr/v2](https://godoc.org/github.com/gobuffalo/packr/v2)
 
-* [github.com/gobuffalo/packr/v2](https://godoc.org/github.com/gobuffalo/packr/v2)
+- [github.com/markbates/grift](https://godoc.org/github.com/markbates/grift)
 
-* [github.com/markbates/grift](https://godoc.org/github.com/markbates/grift)
+- [github.com/mattn/go-colorable](https://godoc.org/github.com/mattn/go-colorable)
 
-* [github.com/mattn/go-colorable](https://godoc.org/github.com/mattn/go-colorable)
+- [github.com/mitchellh/go-homedir](https://godoc.org/github.com/mitchellh/go-homedir)
 
-* [github.com/mitchellh/go-homedir](https://godoc.org/github.com/mitchellh/go-homedir)
+- [github.com/spf13/cobra](https://godoc.org/github.com/spf13/cobra)
 
-* [github.com/spf13/cobra](https://godoc.org/github.com/spf13/cobra)
-
-* [gopkg.in/yaml.v2](https://godoc.org/gopkg.in/yaml.v2)
+- [gopkg.in/yaml.v3](https://godoc.org/gopkg.in/yaml.v3)

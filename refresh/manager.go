@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+
 	"os"
 	"os/exec"
 	"strings"
@@ -11,6 +12,7 @@ import (
 	"time"
 
 	"github.com/fsnotify/fsnotify"
+	"github.com/jaschaephraim/lrserver"
 )
 
 type Manager struct {
@@ -21,6 +23,7 @@ type Manager struct {
 	cancelFunc context.CancelFunc
 	context    context.Context
 	gil        *sync.Once
+	lr         *lrserver.Server
 }
 
 func New(c *Configuration) *Manager {
@@ -44,30 +47,38 @@ func NewWithContext(c *Configuration, ctx context.Context) *Manager {
 func (r *Manager) Start() error {
 	w := NewWatcher(r)
 	w.Start()
+	r.startLivereload()
+
 	go r.build(fsnotify.Event{Name: ":start:"})
 	if !r.Debug {
 		go func() {
+		OuterLoop:
 			for {
 				select {
-				case event := <-w.Events():
+				case event := <-w.MainWatcher.Events():
 					if event.Op != fsnotify.Chmod {
 						go r.build(event)
 					}
-					w.Remove(event.Name)
-					w.Add(event.Name)
+					w.MainWatcher.Remove(event.Name)
+					w.MainWatcher.Add(event.Name)
+				case event := <-w.LivereloadWatcher.Events():
+					go r.Reload(event)
 				case <-r.context.Done():
-					break
+					break OuterLoop
 				}
 			}
 		}()
 	}
 	go func() {
+	OuterLoop:
 		for {
 			select {
-			case err := <-w.Errors():
+			case err := <-w.MainWatcher.Errors():
+				r.Logger.Error(err)
+			case err := <-w.LivereloadWatcher.Errors():
 				r.Logger.Error(err)
 			case <-r.context.Done():
-				break
+				break OuterLoop
 			}
 		}
 	}()
@@ -82,7 +93,6 @@ func (r *Manager) build(event fsnotify.Event) {
 		}()
 		r.buildTransaction(func() error {
 			// time.Sleep(r.BuildDelay * time.Millisecond)
-
 			now := time.Now()
 			r.Logger.Print("Rebuild on: %s", event.Name)
 
@@ -119,4 +129,31 @@ func (r *Manager) buildTransaction(fn func() error) {
 	} else {
 		os.Remove(lpath)
 	}
+}
+
+func (r *Manager) Reload(event fsnotify.Event) {
+	r.gil.Do(func() {
+		defer func() {
+			r.gil = &sync.Once{}
+		}()
+		r.runTasks()
+		r.lr.Reload(event.Name)
+	})
+}
+
+func (r *Manager) isLivereloaderEnable() bool {
+	if r.Livereload.Enable && r.Livereload.IncludedFolders != nil {
+		return true
+	}
+	return false
+}
+
+func (r *Manager) startLivereload() {
+	// Create and start LiveReload server
+	if !r.isLivereloaderEnable() {
+		return
+	}
+	lr := lrserver.New(lrserver.DefaultName, r.Livereload.Port)
+	go lr.ListenAndServe()
+	r.lr = lr
 }
