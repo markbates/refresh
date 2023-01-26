@@ -29,9 +29,7 @@ func NewWatcher(r *Manager) *Watcher {
 		main, _ = filenotify.NewEventWatcher()
 	}
 
-	if r.Livereload.Enable {
-		lr, _ = filenotify.NewEventWatcher()
-	}
+	lr, _ = filenotify.NewEventWatcher()
 
 	return &Watcher{
 		MainWatcher:       main,
